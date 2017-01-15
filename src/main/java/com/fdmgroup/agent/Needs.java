@@ -3,12 +3,12 @@ package com.fdmgroup.agent;
 import java.util.HashMap;
 import java.util.Map;
 
-/* Extend this if needed */
-public class BasicNeeds {
+/* TODO: Make this bare-bones and extend it with BasicNeeds */
+public class Needs {
 	
 	private Map<String,Float> needs = new HashMap<String,Float>();
 	
-	public BasicNeeds() {
+	public Needs() {
 		needs.put("FOOD", 90f);
 		needs.put("ENERGY", 90f);
 	}
@@ -28,7 +28,7 @@ public class BasicNeeds {
 			return true;
 		}
 		else {
-			System.out.println("DEBUG: BasicNeeds: setNeed: No such need: " + needName);
+			//System.out.println("DEBUG: BasicNeeds: setNeed: No such need: " + needName);
 			return false;
 		}
 	}
@@ -39,7 +39,7 @@ public class BasicNeeds {
 			return needs.get(needName);
 		}
 		else {
-			System.out.println("DEBUG: BasicNeeds: changeNeed: No such need: " + needName);
+			//System.out.println("DEBUG: BasicNeeds: changeNeed: No such need: " + needName);
 			return -1f;
 		}
 	}

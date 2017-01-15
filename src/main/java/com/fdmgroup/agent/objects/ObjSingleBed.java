@@ -3,19 +3,20 @@ package com.fdmgroup.agent.objects;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fdmgroup.agent.actions.ActEatMeal;
 import com.fdmgroup.agent.actions.ActEatSnack;
+import com.fdmgroup.agent.actions.ActSleep;
+import com.fdmgroup.agent.actions.ActTakeNap;
 import com.fdmgroup.agent.actions.Action;
 
-public class ObjFridge implements UseableObject {
+public class ObjSingleBed implements UseableObject {
 	
 	List<Action> allActions = new ArrayList<Action>();
-	String name = "fridge";
+	String name = "single bed";
 	boolean beingUsed = false;
 	
-	public ObjFridge() {
-		allActions.add(new ActEatSnack(this));
-		allActions.add(new ActEatMeal(this));
+	public ObjSingleBed() {
+		allActions.add(new ActSleep(this));
+		allActions.add(new ActTakeNap(this));
 	}
 	
 	public List<Action> advertiseActions() {

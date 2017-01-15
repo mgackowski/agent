@@ -17,7 +17,7 @@ public class AgentDecisionThread extends Thread {
 	}
 	
 	public void run() {
-		while(true) {
+		while(thisAgent.isAlive()) {
 			while(!thisAgent.getActionQueue().isEmpty()) {
 				Action nextAction = thisAgent.getActionQueue().remove();
 				try {
@@ -35,6 +35,7 @@ public class AgentDecisionThread extends Thread {
 				}
 			}
 			thisAgent.getActionQueue().add(pickNextAction(possibilities));
+			//System.out.println("DEBUG: " + thisAgent.getName() + "'s possibilities: " + possibilities.toString());
 		}
 	}
 	
