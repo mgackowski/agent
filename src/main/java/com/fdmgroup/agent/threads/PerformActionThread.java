@@ -31,7 +31,7 @@ public class PerformActionThread extends Thread {
 		
 		usedObject.setBeingUsed(true);
 
-		performer.setActionStatus(performedAction.getName() + " using " + usedObject.getName());
+		performer.setActionStatus(performedAction.getName() + " using " + usedObject.getName() + " (id: " + this.getId() + ")");
 		
 		List<Thread> threads = new ArrayList<Thread>();
 		
