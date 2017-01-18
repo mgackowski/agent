@@ -28,7 +28,6 @@ public class Needs {
 			return true;
 		}
 		else {
-			//System.out.println("DEBUG: BasicNeeds: setNeed: No such need: " + needName);
 			return false;
 		}
 	}
@@ -39,7 +38,6 @@ public class Needs {
 			return needs.get(needName);
 		}
 		else {
-			//System.out.println("DEBUG: BasicNeeds: changeNeed: No such need: " + needName);
 			return -1f;
 		}
 	}

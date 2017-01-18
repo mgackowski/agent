@@ -28,7 +28,7 @@ public class ActEatMeal implements Action {
 	
 	/* Refactor idea: move this to UseableObject */
 	public Thread execute(Agent performer, UseableObject usedObject) {
-		Thread actionExecution = new PerformActionThread(performer, usedObject, this, 5000);
+		Thread actionExecution = new PerformActionThread(performer, usedObject, this, 45000);
 		actionExecution.start();
 		return actionExecution;
 	}
