@@ -9,8 +9,9 @@ import com.fdmgroup.agent.threads.AgentDeteriorateThread;
 
 public class Agent {
 	//TODO: Increase abstraction by providing a basic, extensible agent
+	//TODO: Add method to restore default IVs (and possibly field to store them)
 	
-	private BasicNeeds needs = new BasicNeeds();
+	private Needs needs = new Needs();
 	private String name;
 	private boolean alive;
 	private Individuality indivValues;
@@ -88,7 +89,7 @@ public class Agent {
 		this.actionQueue = actionQueue;
 	}
 
-	public BasicNeeds getNeeds() {
+	public Needs getNeeds() {
 		return needs;
 	}
 }

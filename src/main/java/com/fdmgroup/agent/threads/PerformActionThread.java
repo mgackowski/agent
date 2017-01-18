@@ -1,5 +1,8 @@
 package com.fdmgroup.agent.threads;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fdmgroup.agent.Agent;
 import com.fdmgroup.agent.actions.Action;
 import com.fdmgroup.agent.objects.UseableObject;
@@ -9,39 +12,62 @@ public class PerformActionThread extends Thread {
 	Agent performer;
 	UseableObject usedObject;
 	Action performedAction;
+	int requiredMinLength = 0;
 	
 	public PerformActionThread(Agent performer, UseableObject usedObject, Action performedAction) {
 		this.performer = performer;
 		this.usedObject = usedObject;
 		this.performedAction = performedAction;
 	}
+	
+	public PerformActionThread(Agent performer, UseableObject usedObject, Action performedAction, int requiredMinLength) {
+		this.performer = performer;
+		this.usedObject = usedObject;
+		this.performedAction = performedAction;
+		this.requiredMinLength = requiredMinLength;
+	}
 
 	public void run() {
-		//hunger only now
-		//System.out.println("Debug: decision making running");
-		float change = performedAction.getPromises().getChange("FOOD");
-		int numSteps = Math.round(Math.abs(change));
-		//float hungerDownIV = performer.getIndivValues().getDownRate("FOOD");
 		
-		//performer.getIndivValues().setDownRate("FOOD", 0f); //temporarily stop being hungry
-		performer.setActionStatus(performedAction.getName() + " using " + usedObject.getName());
+		usedObject.setBeingUsed(true);
+
+		performer.setActionStatus(performedAction.getName() + " using " + usedObject.getName() + " (id: " + this.getId() + ")");
 		
-		for(String needName : performedAction.getPromises().getChange().keySet()) {
+		List<Thread> threads = new ArrayList<Thread>();
+		
+		for (String needName : performedAction.getConsequences().getAllChanges().keySet()) {
+			Thread changeNeed = new ChangeNeedThread(performer, needName, performedAction.getConsequences().getNeedChange(needName));
+			threads.add(changeNeed);
+			changeNeed.start();
+			// TODO: single satiety value affecting all needs, possibly future change
 			new SatietyThread(performer, needName, performedAction.getSatietyLength()).start();
 		}
 		
-		for (int step = 0; step < numSteps; step++) {
-			performer.getNeeds().changeNeed("FOOD", (change / numSteps));
+		if (requiredMinLength > 0){
+			Thread wait = new WaitThread(requiredMinLength);
+			threads.add(wait);
+			wait.start();
+		}
+		
+		//System.out.println("DEBUG:  threads " + threads.toString());
+		
+		/* Wait for all threads to finish */
+		for (Thread thisThread : threads) {
 			try {
-				Thread.sleep(500);
+				thisThread.join();
 			} catch (InterruptedException e) {
+				//TODO: free up object
 				e.printStackTrace();
 			}
 		}
-		//Thread satiety = new SatietyThread(performer, "FOOD", performedAction.getSatietyLength());
-		//satiety.start();
 
-		performer.setActionStatus("Finished");
+		if (performedAction.getConsequences().getNextAction() != null) {
+			performer.getActionQueue().add(performedAction.getConsequences().getNextAction());
+		}
+		
+		usedObject.setBeingUsed(false);
+
+		performer.setActionStatus("Finished " + performedAction.getName() + " using " + usedObject.getName());
 	}
 
 }

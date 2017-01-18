@@ -8,5 +8,7 @@ public interface UseableObject {
 	
 	public List<Action> advertiseActions();
 	public String getName();
+	public void setBeingUsed(boolean beingUsed);
+	public boolean isBeingUsed();
 
 }

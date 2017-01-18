@@ -10,18 +10,27 @@ public class ObjIdle implements UseableObject {
 	
 	List<Action> allActions = new ArrayList<Action>();
 	String name = "[idle object]";
+	boolean beingUsed = false;
 	
 	public ObjIdle() {
 		allActions.add(new ActWait(this));
 	}
 	
-	public List<Action> advertiseActions() {
-		//TODO: Be selective about which actions to advertise;
+	public synchronized List<Action> advertiseActions() {
+		/* Special case: be available even when used */
 		return allActions;
 	}
 
 	public String getName() {
 		return this.name;
+	}
+
+	public boolean isBeingUsed() {
+		return beingUsed;
+	}
+
+	public void setBeingUsed(boolean beingUsed) {
+		this.beingUsed = beingUsed;
 	}
 
 }

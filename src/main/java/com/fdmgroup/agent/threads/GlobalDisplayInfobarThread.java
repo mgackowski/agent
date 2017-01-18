@@ -2,6 +2,8 @@ package com.fdmgroup.agent.threads;
 
 import com.fdmgroup.agent.Agent;
 import com.fdmgroup.agent.AgentPool;
+import com.fdmgroup.agent.objects.ObjectPool;
+import com.fdmgroup.agent.objects.UseableObject;
 
 public class GlobalDisplayInfobarThread extends Thread {
 
@@ -9,15 +11,19 @@ public class GlobalDisplayInfobarThread extends Thread {
 		
 		while(true) {
 			
-			for (int i=0; i<100; i++) {
+			for (int i=0; i<20; i++) {
 				System.out.println("");
 			}
 			//System.out.println("DEBUG: Starting DisplayInfobar loop.");
 			for (Agent thisAgent : AgentPool.getInstance().getAgents()) {
 				displayAgentStatus(thisAgent);
 			}
+			System.out.println("\n◘ OBJECTS:");
+			for (UseableObject thisObject : ObjectPool.getInstance().getObjects()) {
+				displayObjectStatus(thisObject);
+			}
 			try {
-				Thread.sleep(300);
+				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				System.out.println("DEBUG: DisplayInfobar interrupted.");
 				e.printStackTrace();
@@ -32,10 +38,23 @@ public class GlobalDisplayInfobarThread extends Thread {
 		System.out.print(" ☻ " + thisAgent.getName());
 		System.out.print("\nFOOD:  ");
 		printPercentageBar(thisAgent.getNeeds().getNeed("FOOD"));
+		System.out.print(" (down " + thisAgent.getIndivValues().getDownRate("FOOD") + "/s)");
 		System.out.print("\nSLEEP: ");
 		printPercentageBar(thisAgent.getNeeds().getNeed("ENERGY"));
+		System.out.print(" (down " + thisAgent.getIndivValues().getDownRate("ENERGY") + "/s)");
 		System.out.print("\nACTION: " + thisAgent.getActionStatus());
 		System.out.println("");
+	}
+	
+	public void displayObjectStatus(UseableObject thisObject) {
+		System.out.print(thisObject.getName() + ": ");
+		if (thisObject.isBeingUsed()) {
+			System.out.println("USED");
+		}
+		else {
+			System.out.println("FREE");
+		}
+		System.out.print("");
 	}
 	
 	public void printPercentageBar(float percentage) {
