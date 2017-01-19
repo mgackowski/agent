@@ -31,7 +31,7 @@ public class Agent {
 	private Queue<Action> actionQueue = new ConcurrentLinkedQueue<Action>();
 	
 	public Agent(String name) {
-		indivValues = new BasicIndividuality(1f, 0.1f);
+		indivValues = new FiveIndividuality(1f, 0.5f, 1f, 0.2f, 0.1f);
 		actionStatus = "...";
 		this.name = name;
 		alive = true;

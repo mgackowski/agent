@@ -2,10 +2,8 @@ package com.fdmgroup.agent;
 
 import com.fdmgroup.agent.agents.Agent;
 import com.fdmgroup.agent.agents.AgentPool;
-import com.fdmgroup.agent.agents.BasicIndividuality;
-import com.fdmgroup.agent.objects.ObjFridge;
-import com.fdmgroup.agent.objects.ObjSingleBed;
-import com.fdmgroup.agent.objects.ObjectPool;
+import com.fdmgroup.agent.agents.*;
+import com.fdmgroup.agent.objects.*;
 import com.fdmgroup.agent.threads.GlobalDisplayInfobarThread;
 
 public class Demo implements AgentSim {
@@ -15,14 +13,18 @@ public class Demo implements AgentSim {
 
         ObjectPool.getInstance().addObject(new ObjFridge());
         ObjectPool.getInstance().addObject(new ObjSingleBed());
+        ObjectPool.getInstance().addObject(new ObjToilet());
+        ObjectPool.getInstance().addObject(new ObjShower());
+        ObjectPool.getInstance().addObject(new ObjSink());
+        ObjectPool.getInstance().addObject(new ObjBook());
         
         return true;
 	}
 
 	public boolean prepareAgents() {
 		//TODO: Return false if unsuccessful
-        AgentPool.getInstance().addAgent(new Agent("Bob", new BasicIndividuality(1.3f, 1.22f)));
-        AgentPool.getInstance().addAgent(new Agent("Alice", new BasicIndividuality(1.1f, 1.16f)));
+        AgentPool.getInstance().addAgent(new Agent("Bob"));
+        AgentPool.getInstance().addAgent(new Agent("Alice"));
         
 		return true;
 	}
