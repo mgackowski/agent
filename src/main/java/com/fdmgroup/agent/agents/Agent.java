@@ -27,7 +27,7 @@ public class Agent {
 	private String actionStatus;
 	private Individuality indivValues;
 	
-	private Needs needs = new BasicNeeds();
+	private Needs needs = new FiveNeeds();
 	private Queue<Action> actionQueue = new ConcurrentLinkedQueue<Action>();
 	
 	public Agent(String name) {
