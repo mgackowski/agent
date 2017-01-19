@@ -8,7 +8,6 @@ import com.fdmgroup.agent.objects.UseableObject;
 /**
  * Written for the purpose of providing a visual, real-time representation
  * of Agents' needs in the Oracle Eclipse console.
- * This is written to implementation and will have to be updated as needs are extended.
  * @author Mikolaj Gackowski
  *
  */
@@ -18,7 +17,7 @@ public class GlobalDisplayInfobarThread extends Thread {
 		
 		while(true) {
 			
-			for (int i=0; i<20; i++) { // Hacks.
+			for (int i=0; i<25; i++) { // Hacks.
 				System.out.println("");
 			}
 			for (Agent thisAgent : AgentPool.getInstance().getAgents()) {
@@ -37,15 +36,23 @@ public class GlobalDisplayInfobarThread extends Thread {
 	}
 	
 	public void displayAgentStatus(Agent thisAgent) {
+		//TODO: Nested for loops
 		System.out.println("");
 		System.out.print(" ☻ " + thisAgent.getName());
-		System.out.print("\nFOOD:  ");
-		printPercentageBar(thisAgent.getNeeds().getNeed("FOOD"));
-		System.out.print(" (down " + thisAgent.getIndivValues().getDownRate("FOOD") + "/s)");
-		System.out.print("\nSLEEP: ");
-		printPercentageBar(thisAgent.getNeeds().getNeed("ENERGY"));
-		System.out.print(" (down " + thisAgent.getIndivValues().getDownRate("ENERGY") + "/s)");
-		System.out.print("\nACTION: " + thisAgent.getActionStatus());
+		for(String thisNeed : thisAgent.getNeeds().getNeeds().keySet()) {
+			System.out.print("\n");
+			int charLimit = 7;
+			for (int i=0; i<thisNeed.toCharArray().length; i++) {
+				System.out.print(thisNeed.toCharArray()[i]);
+			}
+			for (int i=0; i<(charLimit - thisNeed.toCharArray().length); i++) {
+				System.out.print(" ");
+			}
+			System.out.print(": ");
+			printPercentageBar(thisAgent.getNeeds().getNeed(thisNeed));
+			System.out.print(" (down " + thisAgent.getIndivValues().getDownRate(thisNeed) + "/s)");
+		}
+		System.out.print("\nACTION : " + thisAgent.getActionStatus());
 		System.out.println("");
 	}
 	
