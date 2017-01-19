@@ -57,4 +57,8 @@ public class Consequence {
 	public Action getNextAction() {
 		return nextAction;
 	}
+
+	public void setNextAction(Action nextAction) {
+		this.nextAction = nextAction;
+	}
 }
