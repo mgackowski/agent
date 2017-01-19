@@ -3,6 +3,11 @@ package com.fdmgroup.agent.objects;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A singleton containing all objects available to agents.
+ * @author Mikolaj Gackowski
+ *
+ */
 public class ObjectPool {
 	
 	private static ObjectPool instance = new ObjectPool();

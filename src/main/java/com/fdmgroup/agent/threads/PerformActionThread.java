@@ -3,8 +3,8 @@ package com.fdmgroup.agent.threads;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fdmgroup.agent.Agent;
 import com.fdmgroup.agent.actions.Action;
+import com.fdmgroup.agent.agents.Agent;
 import com.fdmgroup.agent.objects.UseableObject;
 
 public class PerformActionThread extends Thread {
@@ -48,8 +48,6 @@ public class PerformActionThread extends Thread {
 			threads.add(wait);
 			wait.start();
 		}
-		
-		//System.out.println("DEBUG:  threads " + threads.toString());
 		
 		/* Wait for all threads to finish */
 		for (Thread thisThread : threads) {

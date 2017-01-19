@@ -1,20 +1,26 @@
 package com.fdmgroup.agent.threads;
 
-import com.fdmgroup.agent.Agent;
-import com.fdmgroup.agent.AgentPool;
+import com.fdmgroup.agent.agents.Agent;
+import com.fdmgroup.agent.agents.AgentPool;
 import com.fdmgroup.agent.objects.ObjectPool;
 import com.fdmgroup.agent.objects.UseableObject;
 
+/**
+ * Written for the purpose of providing a visual, real-time representation
+ * of Agents' needs in the Oracle Eclipse console.
+ * This is written to implementation and will have to be updated as needs are extended.
+ * @author Mikolaj Gackowski
+ *
+ */
 public class GlobalDisplayInfobarThread extends Thread {
 
 	public void run() {
 		
 		while(true) {
 			
-			for (int i=0; i<20; i++) {
+			for (int i=0; i<20; i++) { // Hacks.
 				System.out.println("");
 			}
-			//System.out.println("DEBUG: Starting DisplayInfobar loop.");
 			for (Agent thisAgent : AgentPool.getInstance().getAgents()) {
 				displayAgentStatus(thisAgent);
 			}
@@ -25,12 +31,9 @@ public class GlobalDisplayInfobarThread extends Thread {
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
-				System.out.println("DEBUG: DisplayInfobar interrupted.");
 				e.printStackTrace();
 			}
-			
 		}
-	
 	}
 	
 	public void displayAgentStatus(Agent thisAgent) {

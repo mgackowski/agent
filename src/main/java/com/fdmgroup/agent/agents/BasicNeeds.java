@@ -1,16 +1,15 @@
-package com.fdmgroup.agent;
+package com.fdmgroup.agent.agents;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/* TODO: Make this bare-bones and extend it with BasicNeeds */
-public class Needs {
+public class BasicNeeds implements Needs {
 	
 	private Map<String,Float> needs = new HashMap<String,Float>();
 	
-	public Needs() {
-		needs.put("FOOD", 90f);
-		needs.put("ENERGY", 90f);
+	public BasicNeeds() {
+		needs.put("FOOD", 80f);
+		needs.put("ENERGY", 80f);
 	}
 	
 	public float getNeed(String needName){

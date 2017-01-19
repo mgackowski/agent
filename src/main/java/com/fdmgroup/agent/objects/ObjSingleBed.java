@@ -2,8 +2,6 @@ package com.fdmgroup.agent.objects;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.fdmgroup.agent.actions.ActEatSnack;
 import com.fdmgroup.agent.actions.ActSleep;
 import com.fdmgroup.agent.actions.ActTakeNap;
 import com.fdmgroup.agent.actions.Action;
@@ -26,10 +24,6 @@ public class ObjSingleBed implements UseableObject {
 		else {
 			return allActions;
 		}
-	}
-	
-	private void updateAvailableActions() {
-		//currently unused - modifying arraylist causes concurrency issues with mulyiple agents
 	}
 
 	public String getName() {

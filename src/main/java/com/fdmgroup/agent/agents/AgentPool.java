@@ -1,8 +1,13 @@
-package com.fdmgroup.agent;
+package com.fdmgroup.agent.agents;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A singleton containing all agents.
+ * @author Mikolaj Gackowski
+ *
+ */
 public class AgentPool {
 	
 	private static AgentPool instance = new AgentPool();

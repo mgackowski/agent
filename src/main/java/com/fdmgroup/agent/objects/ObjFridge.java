@@ -26,10 +26,6 @@ public class ObjFridge implements UseableObject {
 			return allActions;
 		}
 	}
-	
-	private void updateAvailableActions() {
-		//currently unused - modifying arraylist causes concurrency issues with mulyiple agents
-	}
 
 	public String getName() {
 		return this.name;

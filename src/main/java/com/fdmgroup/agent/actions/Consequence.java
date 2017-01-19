@@ -3,6 +3,13 @@ package com.fdmgroup.agent.actions;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class provides a description of how an action will affect the needs of the agent.
+ * Complex actions are broken down; getNextAction can provide the next link in the chain.
+ * The class can and should be extended for more advanced object/action implementations.
+ * @author Mikolaj Gackowski
+ *
+ */
 public class Consequence {
 	
 	private Map<String,Float> change = new HashMap<String,Float>();

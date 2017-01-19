@@ -1,6 +1,6 @@
 package com.fdmgroup.agent.threads;
 
-import com.fdmgroup.agent.Agent;
+import com.fdmgroup.agent.agents.Agent;
 
 public class SatietyThread extends Thread {
 	
@@ -22,7 +22,6 @@ public class SatietyThread extends Thread {
 	
 	public void run() {
 		float originalDeteriorationRate = satedAgent.getIndivValues().getDownRate(needName);
-		//System.out.println(originalDeteriorationRate);
 		satedAgent.getIndivValues().setDownRate(needName, 0);
 		try {
 			Thread.sleep(millis);

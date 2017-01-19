@@ -1,16 +1,22 @@
 package com.fdmgroup.agent.actions;
 
-import com.fdmgroup.agent.Agent;
+import com.fdmgroup.agent.agents.Agent;
 import com.fdmgroup.agent.objects.UseableObject;
 import com.fdmgroup.agent.threads.PerformActionThread;
 
+/**
+ * Deprecated. The AgentDecisionThread will now use WaitThread as fallback when
+ * no beneficial actions are available.
+ * @author Mikolaj.Gackowski
+ *
+ */
 public class ActWait implements Action {
 	
 	private String name = "wait";
 	private Promise advertisedPromise = new Promise();
 	private Consequence consequences = new Consequence();
-	private int satietyLength = 0; // TODO: consider moving to Consequence
-	private UseableObject tiedObject; // execute() could be moved to UseableObject, then this field becomes unnecessary
+	private int satietyLength = 0;
+	private UseableObject tiedObject;
 
 	public ActWait(UseableObject tiedObject) {
 		this.tiedObject = tiedObject;
@@ -24,9 +30,8 @@ public class ActWait implements Action {
 		return consequences;
 	}
 	
-	/* Refactor idea: move this to UseableObject */
-	public Thread execute(Agent performer, UseableObject usedObject) {
-		Thread actionExecution = new PerformActionThread(performer, usedObject, this, 5000);
+	public PerformActionThread execute(Agent performer, UseableObject usedObject) {
+		PerformActionThread actionExecution = new PerformActionThread(performer, usedObject, this, 5000);
 		actionExecution.start();
 		return actionExecution;
 	}
