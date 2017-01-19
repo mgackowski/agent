@@ -1,6 +1,6 @@
 package com.fdmgroup.agent.actions;
 
-import com.fdmgroup.agent.Agent;
+import com.fdmgroup.agent.agents.Agent;
 import com.fdmgroup.agent.objects.UseableObject;
 import com.fdmgroup.agent.threads.PerformActionThread;
 
@@ -27,8 +27,8 @@ public class ActTakeNap implements Action {
 	}
 	
 	/* Refactor idea: move this to UseableObject */
-	public Thread execute(Agent performer, UseableObject usedObject) {
-		Thread actionExecution = new PerformActionThread(performer, usedObject, this, 10000);
+	public PerformActionThread execute(Agent performer, UseableObject usedObject) {
+		PerformActionThread actionExecution = new PerformActionThread(performer, usedObject, this, 10000);
 		actionExecution.start();
 		return actionExecution;
 	}

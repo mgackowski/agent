@@ -1,4 +1,4 @@
-package com.fdmgroup.agent;
+package com.fdmgroup.agent.agents;
 
 public class BasicIndividuality extends Individuality {
 

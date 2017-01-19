@@ -1,9 +1,9 @@
-package com.fdmgroup.agent;
+package com.fdmgroup.agent.agents;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Individuality {
+public abstract class Individuality {
 	
 	private Map<String,Float> downRate = new HashMap<String,Float>();
 
@@ -22,7 +22,6 @@ public class Individuality {
 			return true;
 		}
 		else {
-			System.out.println("DEBUG: Individuality setDownRate: No such need: " + needName);
 			return false;
 		}
 	}

@@ -3,17 +3,25 @@ package com.fdmgroup.agent.actions;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Actions will communicate with agents, telling them ("promising") which needs they can satisfy.
+ * This class provides a description of such promises for an individual action.
+ * Note that the promised values can be different from the actual consequences (see Consequence).
+ * The class can and should be extended for more advanced object/action implementations.
+ * @author Mikolaj Gackowski
+ *
+ */
 public class Promise {
 	
+	/* K - need name, e.g. "FOOD", V - promised change, e.g. 20f or -10f */
 	private Map<String,Float> change = new HashMap<String,Float>();
 
 	public float getChange(String needName){
 		if (change.containsKey(needName)) {
-			//System.out.println("DEBUG: Promise change contains key " + needName);
 			return change.get(needName);
 		}
 		else {
-			return 0f;	//important to default to zero: decision thread depends on it
+			return 0f;
 		}
 	}
 
@@ -23,7 +31,6 @@ public class Promise {
 			return true;
 		}
 		else {
-			System.out.println("DEBUG: Promise setChange No such need: " + needName);
 			return false;
 		}
 	}

@@ -3,8 +3,8 @@ package com.fdmgroup.agent.threads;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fdmgroup.agent.Agent;
 import com.fdmgroup.agent.actions.Action;
+import com.fdmgroup.agent.agents.Agent;
 import com.fdmgroup.agent.objects.ObjectPool;
 import com.fdmgroup.agent.objects.UseableObject;
 
@@ -27,7 +27,6 @@ public class AgentDecisionThread extends Thread {
 				try {
 					nextAction.execute(thisAgent, nextAction.getTiedObject()).join(); //waits for thread
 				} catch (InterruptedException e) {
-					System.out.println("DEBUG: Execute interrupted.");
 					e.printStackTrace();
 				}
 			}
@@ -54,8 +53,6 @@ public class AgentDecisionThread extends Thread {
 			else { // else, add next best action to the queue
 				thisAgent.getActionQueue().add(nextAction);
 			}
-
-			//System.out.println("DEBUG: " + thisAgent.getName() + "'s possibilities: " + possibilities.toString());
 		}
 	}
 	
@@ -108,7 +105,7 @@ public class AgentDecisionThread extends Thread {
 	public Action pickNextAction(Map<Action,Float> possibilities) {
 		/* If no action scores greater than zero, this will return null */
 		
-		debugScores(possibilities);
+		//debugScores(possibilities);
 		
 		if (possibilities.isEmpty()) {
 			return null;

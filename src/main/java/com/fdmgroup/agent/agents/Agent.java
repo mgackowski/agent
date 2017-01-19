@@ -1,4 +1,4 @@
-package com.fdmgroup.agent;
+package com.fdmgroup.agent.agents;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -7,44 +7,54 @@ import com.fdmgroup.agent.actions.Action;
 import com.fdmgroup.agent.threads.AgentDecisionThread;
 import com.fdmgroup.agent.threads.AgentDeteriorateThread;
 
+/**
+ * The Agent is the main focus of the program; it has Needs it will seek to satisfy,
+ * as well as Individuality which affects how its need levels change.
+ * An Agent's "life" begins a series of threads which affect its needs and individual values,
+ * most notably a deterioration thread (Agent's need levels decrease over time) and a
+ * decision making thread (performing Actions and picking the best available ones).
+ * The class can and should be extended when a more complex simulation is needed.
+ * //TODO: Add method to restore default IVs (and possibly new field/object to store them).
+ * @author Mikolaj Gackowski
+ *
+ */
 public class Agent {
-	//TODO: Increase abstraction by providing a basic, extensible agent
-	//TODO: Add method to restore default IVs (and possibly field to store them)
 	
-	private Needs needs = new Needs();
+	
 	private String name;
 	private boolean alive;
-	private Individuality indivValues;
+	
 	private String actionStatus;
+	private Individuality indivValues;
+	
+	private Needs needs = new BasicNeeds();
 	private Queue<Action> actionQueue = new ConcurrentLinkedQueue<Action>();
 	
 	public Agent(String name) {
+		indivValues = new BasicIndividuality(1f, 0.1f);
+		actionStatus = "...";
 		this.name = name;
 		alive = true;
-		actionStatus = "Just created.";
-		indivValues = new BasicIndividuality(1f, 0.1f);
 	}
 	
 	public Agent(String name, Individuality indivValues) {
-		this.name = name;
 		this.indivValues = indivValues;
+		this.name = name;
 		alive = true;
-		actionStatus = "Just created.";
+		actionStatus = "...";
 	}
 	
 	public boolean startLife() {
 		
 		Thread deteriorate = new AgentDeteriorateThread(this);
 		deteriorate.start();
-		actionStatus = "From now on, slowly dying.";
 		Thread decide = new AgentDecisionThread(this);
 		decide.start();
-		
 		return true;
 	}
 	
 	public boolean kill() {
-		this.actionStatus = "Dead.";
+		this.actionStatus = "dead";
 		this.alive = false;
 		return true;
 	}

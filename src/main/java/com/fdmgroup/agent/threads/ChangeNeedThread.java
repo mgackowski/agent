@@ -1,6 +1,6 @@
 package com.fdmgroup.agent.threads;
 
-import com.fdmgroup.agent.Agent;
+import com.fdmgroup.agent.agents.Agent;
 
 public class ChangeNeedThread extends Thread {
 	

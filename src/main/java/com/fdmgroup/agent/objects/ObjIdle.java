@@ -6,6 +6,12 @@ import java.util.List;
 import com.fdmgroup.agent.actions.ActWait;
 import com.fdmgroup.agent.actions.Action;
 
+/**
+ * Deprecated. The AgentDecisionThread will now use WaitThread as fallback when
+ * no beneficial actions are available.
+ * @author Mikolaj.Gackowski
+ *
+ */
 public class ObjIdle implements UseableObject {
 	
 	List<Action> allActions = new ArrayList<Action>();
