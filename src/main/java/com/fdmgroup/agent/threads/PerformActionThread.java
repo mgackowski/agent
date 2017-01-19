@@ -65,7 +65,7 @@ public class PerformActionThread extends Thread {
 		
 		usedObject.setBeingUsed(false);
 
-		performer.setActionStatus("Finished " + performedAction.getName() + " using " + usedObject.getName());
+		//performer.setActionStatus("Finished " + performedAction.getName() + " using " + usedObject.getName());
 	}
 
 }
