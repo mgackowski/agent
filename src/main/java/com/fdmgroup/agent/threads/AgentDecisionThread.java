@@ -21,43 +21,66 @@ public class AgentDecisionThread extends Thread {
 		//TODO: Agents should break out of actions if there is another critical need to satisfy
 		//TODO: Alive condition must be checked more often
 		
-		while(thisAgent.isAlive()) {	//TODO: Nested while loops
+		while(thisAgent.isAlive()) {
 			
-			//While Agent has actions in the queue, perform them
-			while(!thisAgent.getActionQueue().isEmpty()) {
-				Action nextAction = thisAgent.getActionQueue().remove();
-				try {
-					nextAction.execute(thisAgent, nextAction.getTiedObject()).join(); //waits for thread
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
+			// While Agent has actions in the queue, perform them
+			performActionsInQueue();
 			
-			//When Agent has run out of actions, find one to perform next
-			Map<Action,Float> possibilities = new HashMap<Action,Float>();
-			for(UseableObject singleObject : ObjectPool.getInstance().getObjects()) {
-				for (Action singleAction : singleObject.advertiseActions()) {
-					possibilities.put(singleAction, attenuatedScoreAction(singleAction));
-				}
+			if (thisAgent.isAlive()) { //Agent might have died while performing Actions
+				// Query the environment for possibilities
+				Map<Action,Float> possibilities = queryEnvironmentForPossibilities();
+				// Add new action to queue, or do something else 
+				reactToPossibilities(possibilities);
 			}
-			Action nextAction = pickNextAction(possibilities);
-			
-			//If there is a next action, add it to the queue
-			if (nextAction != null) {
-				thisAgent.getActionQueue().add(nextAction);
+		}
+	}
+	
+	public void performActionsInQueue() {
+		while(!thisAgent.getActionQueue().isEmpty() && thisAgent.isAlive()) {
+			Action nextAction = thisAgent.getActionQueue().remove();
+			try {
+				nextAction.execute(thisAgent, nextAction.getTiedObject()).join(); //waits for thread
+			} catch (InterruptedException e) {
+				//TODO: The current action got interrupted. What now?
+				e.printStackTrace();
 			}
-			else {
-				Thread waitSecond = new WaitThread(1000);
-				waitSecond.start();
-				thisAgent.setActionStatus("wait (no compelling actions available)");
-				try {
-					waitSecond.join();
-				}
-				catch (InterruptedException e) {
-					//TODO: Log that an action has been interrupted.
-					e.printStackTrace();
-				}
+		}
+	}
+	
+	public Map<Action, Float> queryEnvironmentForPossibilities() {
+		Map<Action,Float> possibilities = new HashMap<Action,Float>();
+		for(UseableObject singleObject : ObjectPool.getInstance().getObjects()) {
+			for (Action singleAction : singleObject.advertiseActions()) {
+				possibilities.put(singleAction, attenuatedScoreAction(singleAction));
 			}
+		}
+		return possibilities;
+	}
+	
+	public void reactToPossibilities(Map<Action, Float> possibilities) {
+		// Pick the best action from the possibilities
+		Action nextAction = pickNextAction(possibilities);
+		
+		// If there is a next action, add it to the queue
+		if (nextAction != null) {
+			thisAgent.getActionQueue().add(nextAction);
+		}
+		else {
+			performFallbackActions();
+		}
+	}
+	
+	public void performFallbackActions() {
+		// Wait for one second and hope for the situation to change
+		Thread waitSecond = new WaitThread(1000);
+		waitSecond.start();
+		thisAgent.setActionStatus("wait (no compelling actions available)");
+		try {
+			waitSecond.join();
+		}
+		catch (InterruptedException e) {
+			//TODO: Log that an action has been interrupted.
+			e.printStackTrace();
 		}
 	}
 	

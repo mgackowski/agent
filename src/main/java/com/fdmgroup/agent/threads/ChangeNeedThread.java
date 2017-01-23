@@ -22,6 +22,9 @@ public class ChangeNeedThread extends Thread {
 				targetAgent.getNeeds().setNeed(needName, 100f);
 				return;
 			}
+			if(!targetAgent.isAlive()) {
+				return;
+			}
 			targetAgent.getNeeds().changeNeed(needName, (needChangeValue / numSteps));
 			try {
 				Thread.sleep(500);

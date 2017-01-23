@@ -30,8 +30,8 @@ public class AgentDeteriorateThread extends Thread {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				System.out.println("DEBUG: Deteriorate interrupted");
-				e.printStackTrace();
+				//TODO: Log that deterioration has been interrupted.
+				return;
 			}
 		}
 	}
