@@ -25,11 +25,12 @@ public class SatietyThread extends Thread {
 		satedAgent.getIndivValues().setDownRate(needName, 0);
 		try {
 			Thread.sleep(millis);
-		} catch (InterruptedException e) {
-			System.out.println("DEBUG: SatietyThread interrupted for agent " + satedAgent.getName());
-			e.printStackTrace();
 		}
-		satedAgent.getIndivValues().setDownRate(needName, originalDeteriorationRate);
+		catch (InterruptedException e) {
+			//TODO: Log: This agent's satiety thread has been interrupted.
+		}
+		finally {
+			satedAgent.getIndivValues().setDownRate(needName, originalDeteriorationRate);
+		}
 	}
-
 }

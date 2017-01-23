@@ -19,14 +19,13 @@ public class AgentDecisionThread extends Thread {
 	public void run() {
 		
 		//TODO: Agents should break out of actions if there is another critical need to satisfy
-		//TODO: Alive condition must be checked more often
 		
-		while(thisAgent.isAlive()) {
+		while(thisAgent.isAlive() && !isInterrupted()) {
 			
 			// While Agent has actions in the queue, perform them
 			performActionsInQueue();
 			
-			if (thisAgent.isAlive()) { //Agent might have died while performing Actions
+			if (thisAgent.isAlive() && !isInterrupted()) { //Agent might have died while performing Actions
 				// Query the environment for possibilities
 				Map<Action,Float> possibilities = queryEnvironmentForPossibilities();
 				// Add new action to queue, or do something else 
@@ -41,8 +40,9 @@ public class AgentDecisionThread extends Thread {
 			try {
 				nextAction.execute(thisAgent, nextAction.getTiedObject()).join(); //waits for thread
 			} catch (InterruptedException e) {
-				//TODO: The current action got interrupted. What now?
-				e.printStackTrace();
+				// TODO: Log: AgentDecisionThread interrupted while waiting for an action to execute.
+				// Automatic decision making is shut down.
+				interrupt();
 			}
 		}
 	}
@@ -79,8 +79,7 @@ public class AgentDecisionThread extends Thread {
 			waitSecond.join();
 		}
 		catch (InterruptedException e) {
-			//TODO: Log that an action has been interrupted.
-			e.printStackTrace();
+			//TODO: Log that the wait has been interrupted.
 		}
 	}
 	
@@ -146,7 +145,7 @@ public class AgentDecisionThread extends Thread {
 	}
 	
 	//TODO: This should be handled by a logger
-	private void debugScores(Map<Action,Float> possibilities) {
+	public void debugScores(Map<Action,Float> possibilities) {
 		System.out.println("\n═══ WELCOME TO " + thisAgent.getName() + "'s BRAIN ═══");
 		for(Action thisAction : possibilities.keySet()) {
 			System.out.println("[" + thisAction.getName() + "]" + " SCORE: " + possibilities.get(thisAction));}

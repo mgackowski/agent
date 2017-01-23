@@ -29,7 +29,8 @@ public class ChangeNeedThread extends Thread {
 			try {
 				Thread.sleep(500);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				//TODO: Log that changing needs has been interrupted;
+				return;
 			}
 		}
 	}

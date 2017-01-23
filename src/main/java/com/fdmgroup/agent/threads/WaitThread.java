@@ -12,7 +12,8 @@ public class WaitThread extends Thread {
 		try {
 			Thread.sleep(millis);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			//TODO: Log: The wait thread has been interrupted.
+			return;
 		}
 	}
 }

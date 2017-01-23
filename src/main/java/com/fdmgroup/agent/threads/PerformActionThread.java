@@ -14,6 +14,8 @@ public class PerformActionThread extends Thread {
 	Action performedAction;
 	int requiredMinLength = 0;
 	
+	List<Thread> threads = new ArrayList<Thread>();
+	
 	public PerformActionThread(Agent performer, UseableObject usedObject, Action performedAction) {
 		this.performer = performer;
 		this.usedObject = usedObject;
@@ -32,8 +34,6 @@ public class PerformActionThread extends Thread {
 		usedObject.setBeingUsed(true);
 
 		performer.setActionStatus(performedAction.getName() + " using " + usedObject.getName() + " (id: " + this.getId() + ")");
-		
-		List<Thread> threads = new ArrayList<Thread>();
 		
 		for (String needName : performedAction.getConsequences().getAllChanges().keySet()) {
 			Thread changeNeed = new ChangeNeedThread(performer, needName, performedAction.getConsequences().getNeedChange(needName));
@@ -54,8 +54,11 @@ public class PerformActionThread extends Thread {
 			try {
 				thisThread.join();
 			} catch (InterruptedException e) {
-				//TODO: free up object
-				e.printStackTrace();
+				// To interrupt an action, an interrupt will have to be invoked on every
+				// single thread in the thread list - use interruptThreads() provided
+				//TODO: Log: one of this action's threads has been interrupted, action is cancelled 
+				usedObject.setBeingUsed(false);
+				return;
 			}
 		}
 
@@ -64,8 +67,16 @@ public class PerformActionThread extends Thread {
 		}
 		
 		usedObject.setBeingUsed(false);
+	}
 
-		//performer.setActionStatus("Finished " + performedAction.getName() + " using " + usedObject.getName());
+	public List<Thread> getThreads() {
+		return threads;
+	}
+	
+	public void interruptThreads() {
+		for (Thread thisThread : threads) {
+			thisThread.interrupt();
+		}
 	}
 
 }
