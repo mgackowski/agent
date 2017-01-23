@@ -21,7 +21,9 @@ public class AgentDecisionThread extends Thread {
 		//TODO: Agents should break out of actions if there is another critical need to satisfy
 		//TODO: Alive condition must be checked more often
 		
-		while(thisAgent.isAlive()) {
+		while(thisAgent.isAlive()) {	//TODO: Nested while loops
+			
+			//While Agent has actions in the queue, perform them
 			while(!thisAgent.getActionQueue().isEmpty()) {
 				Action nextAction = thisAgent.getActionQueue().remove();
 				try {
@@ -31,6 +33,7 @@ public class AgentDecisionThread extends Thread {
 				}
 			}
 			
+			//When Agent has run out of actions, find one to perform next
 			Map<Action,Float> possibilities = new HashMap<Action,Float>();
 			for(UseableObject singleObject : ObjectPool.getInstance().getObjects()) {
 				for (Action singleAction : singleObject.advertiseActions()) {
@@ -39,19 +42,21 @@ public class AgentDecisionThread extends Thread {
 			}
 			Action nextAction = pickNextAction(possibilities);
 			
-			/* If there's nothing to do, wait it out */
-			if (nextAction == null) {
+			//If there is a next action, add it to the queue
+			if (nextAction != null) {
+				thisAgent.getActionQueue().add(nextAction);
+			}
+			else {
 				Thread waitSecond = new WaitThread(1000);
 				waitSecond.start();
 				thisAgent.setActionStatus("wait (no compelling actions available)");
 				try {
 					waitSecond.join();
-				} catch (InterruptedException e) {
+				}
+				catch (InterruptedException e) {
+					//TODO: Log that an action has been interrupted.
 					e.printStackTrace();
 				}
-			}
-			else { // else, add next best action to the queue
-				thisAgent.getActionQueue().add(nextAction);
 			}
 		}
 	}
@@ -103,16 +108,11 @@ public class AgentDecisionThread extends Thread {
 	}
 	
 	public Action pickNextAction(Map<Action,Float> possibilities) {
-		/* If no action scores greater than zero, this will return null */
-		
-		//debugScores(possibilities);
-		
 		if (possibilities.isEmpty()) {
 			return null;
 		}
-		
-		float maxScore = 0;
-		Action bestAction = null;	//maybe replace with Idle for safety?
+		float maxScore = 0;	// threshold below which being idle is considered better
+		Action bestAction = null;
 		for(Action thisAction : possibilities.keySet()) {
 			if (possibilities.get(thisAction) > maxScore) {
 				maxScore = possibilities.get(thisAction);
@@ -122,6 +122,7 @@ public class AgentDecisionThread extends Thread {
 		return bestAction;
 	}
 	
+	//TODO: This should be handled by a logger
 	private void debugScores(Map<Action,Float> possibilities) {
 		System.out.println("\n═══ WELCOME TO " + thisAgent.getName() + "'s BRAIN ═══");
 		for(Action thisAction : possibilities.keySet()) {
