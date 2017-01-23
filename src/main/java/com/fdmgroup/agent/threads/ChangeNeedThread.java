@@ -12,6 +12,7 @@ public class ChangeNeedThread extends Thread {
 		this.needChangeValue = needChangeValue;
 		this.targetAgent = targetAgent;
 		this.needName = needName;
+		this.setName(needName + " +" + needChangeValue + " change thread");
 	}
 
 	public void run() {
@@ -27,9 +28,10 @@ public class ChangeNeedThread extends Thread {
 			}
 			targetAgent.getNeeds().changeNeed(needName, (needChangeValue / numSteps));
 			try {
-				Thread.sleep(500);
+				Thread.sleep(200);
 			} catch (InterruptedException e) {
 				//TODO: Log that changing needs has been interrupted;
+				System.out.println("CHanging needs interrupted for agent/need: " + targetAgent.getName() + " " + needName);
 				return;
 			}
 		}

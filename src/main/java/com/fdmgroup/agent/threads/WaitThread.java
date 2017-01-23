@@ -6,6 +6,7 @@ public class WaitThread extends Thread {
 	
 	WaitThread(long millis) {
 		this.millis = millis;
+		this.setName("wait " + millis + "s thread");
 	}
 	
 	public void run() {

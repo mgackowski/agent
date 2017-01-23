@@ -1,5 +1,9 @@
 package com.fdmgroup.agent.threads;
 
+import java.util.Map;
+import java.util.Queue;
+
+import com.fdmgroup.agent.actions.Action;
 import com.fdmgroup.agent.agents.Agent;
 
 public class AgentDeteriorateThread extends Thread {
@@ -22,8 +26,13 @@ public class AgentDeteriorateThread extends Thread {
 					thisAgent.getNeeds().setNeed("FOOD", 0f);
 					thisAgent.kill();
 				}
-				else {
+				else { //TODO: Temporary measure for dramatic effect
 					thisAgent.getNeeds().setNeed(needName, 0f);
+					thisAgent.kill();
+				}
+				
+				if (thisAgent.getNeeds().getNeed(needName) < 10) {
+					satisfyCriticalState(needName);
 				}
 			}
 			
@@ -32,6 +41,20 @@ public class AgentDeteriorateThread extends Thread {
 			} catch (InterruptedException e) {
 				//TODO: Log that deterioration has been interrupted.
 				return;
+			}
+		}
+	}
+	
+	public void satisfyCriticalState(String needName) {
+		/* The only effect of this is interrupting and starting a new action every second,
+		 * a better version must be implemented. But it does help with survival slightly.
+		 */
+		
+		if (thisAgent.getCurrentAction() != null) {
+			for (Thread runningThread : thisAgent.getCurrentAction().getThreads()) {
+				if (!runningThread.isInterrupted()) {
+					runningThread.interrupt();
+				}
 			}
 		}
 	}

@@ -51,7 +51,17 @@ public class AgentDecisionThread extends Thread {
 		Map<Action,Float> possibilities = new HashMap<Action,Float>();
 		for(UseableObject singleObject : ObjectPool.getInstance().getObjects()) {
 			for (Action singleAction : singleObject.advertiseActions()) {
-				possibilities.put(singleAction, attenuatedScoreAction(singleAction));
+				possibilities.put(singleAction, attenuatedScoreActionForAllNeeds(singleAction));
+			}
+		}
+		return possibilities;
+	}
+	
+	public Map<Action, Float> queryEnvironmentForPossibilities(String singleNeedName) {
+		Map<Action,Float> possibilities = new HashMap<Action,Float>();
+		for(UseableObject singleObject : ObjectPool.getInstance().getObjects()) {
+			for (Action singleAction : singleObject.advertiseActions()) {
+				possibilities.put(singleAction, attenuatedScoreActionForSingleNeed(singleAction, singleNeedName));
 			}
 		}
 		return possibilities;
@@ -83,7 +93,7 @@ public class AgentDecisionThread extends Thread {
 		}
 	}
 	
-	public float simpleScoreAction(Action thisAction) {
+	public float simpleScoreActionForAllNeeds(Action thisAction) {
 		float sum = 0;
 		for (String needName : thisAgent.getNeeds().getNeeds().keySet()) {
 			float current = thisAgent.getNeeds().getNeed(needName); // add current need level
@@ -100,7 +110,7 @@ public class AgentDecisionThread extends Thread {
 		return sum;
 	}
 	
-	public float attenuatedScoreAction(Action thisAction) {
+	public float attenuatedScoreActionForAllNeeds(Action thisAction) {
 		
 		//TODO: Different equations for different needs?
 		//TODO: Individual modifiers?
@@ -116,17 +126,24 @@ public class AgentDecisionThread extends Thread {
 		 */
 		float sum = 0;
 		for (String needName : thisAgent.getNeeds().getNeeds().keySet()) {
-			float current = thisAgent.getNeeds().getNeed(needName);
-			float delta = thisAction.getPromises().getChange(needName);
-			
-			if (0 < (current + delta) && (current+delta) <= 100) {
-				sum += 100/current - 100/(current+delta);
-			}
-			if ((current+delta) > 100) {
-				sum += 100/current - 100/(current+delta) - current/1000*(current+delta-100)*(current+delta-100);
-			}
+			sum += attenuatedScoreActionForSingleNeed(thisAction, needName);
 		}
 		return sum;
+	}
+	
+	public float attenuatedScoreActionForSingleNeed(Action thisAction, String needName) {
+		
+		float score = 0;
+		float current = thisAgent.getNeeds().getNeed(needName);
+		float delta = thisAction.getPromises().getChange(needName);
+		
+		if (0 < (current + delta) && (current+delta) <= 100) {
+			score = 100/current - 100/(current+delta);
+		}
+		if ((current+delta) > 100) {
+			score = 100/current - 100/(current+delta) - current/1000*(current+delta-100)*(current+delta-100);
+		}
+		return score;
 	}
 	
 	public Action pickNextAction(Map<Action,Float> possibilities) {

@@ -24,6 +24,7 @@ public class Demo implements AgentSim {
 	public boolean prepareAgents() {
 		//TODO: Return false if unsuccessful
         AgentPool.getInstance().addAgent(new Agent("Bob", new FiveIndividuality(1.2f,0.6f,1.2f,0.2f,0.12f)));
+        AgentPool.getInstance().addAgent(new Agent("Reverse Bob", new FiveIndividuality(1.2f,0.6f,1.2f,0.2f,0.12f)));
         AgentPool.getInstance().addAgent(new Agent("Alice", new FiveIndividuality(1f,0.5f,1f,0.2f,0.1f)));
         AgentPool.getInstance().addAgent(new Agent("Sleepy Gary", new FiveIndividuality(1.1f,0.4f,1.3f,0.1f,0.4f)));
         

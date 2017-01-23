@@ -20,6 +20,7 @@ public class PerformActionThread extends Thread {
 		this.performer = performer;
 		this.usedObject = usedObject;
 		this.performedAction = performedAction;
+		this.setName(performedAction.getName() + " thread " + this.getId());
 	}
 	
 	public PerformActionThread(Agent performer, UseableObject usedObject, Action performedAction, int requiredMinLength) {
@@ -27,20 +28,24 @@ public class PerformActionThread extends Thread {
 		this.usedObject = usedObject;
 		this.performedAction = performedAction;
 		this.requiredMinLength = requiredMinLength;
+		this.setName(performedAction.getName() + " thread " + this.getId());
 	}
 
 	public void run() {
 		
 		usedObject.setBeingUsed(true);
-
+		
+		performer.setCurrentAction(this);
 		performer.setActionStatus(performedAction.getName() + " using " + usedObject.getName() + " (id: " + this.getId() + ")");
 		
 		for (String needName : performedAction.getConsequences().getAllChanges().keySet()) {
 			Thread changeNeed = new ChangeNeedThread(performer, needName, performedAction.getConsequences().getNeedChange(needName));
 			threads.add(changeNeed);
 			changeNeed.start();
+			
 			// TODO: single satiety value affecting all needs, possibly future change
-			new SatietyThread(performer, needName, performedAction.getSatietyLength()).start();
+			// TODO: this invocation will temporarily ignore millis to simplify the program
+			new SatietyThread(performer, needName, this).start();
 		}
 		
 		if (requiredMinLength > 0){
@@ -58,6 +63,7 @@ public class PerformActionThread extends Thread {
 				// single thread in the thread list - use interruptThreads() provided
 				//TODO: Log: one of this action's threads has been interrupted, action is cancelled 
 				usedObject.setBeingUsed(false);
+				performer.setCurrentAction(null);
 				return;
 			}
 		}
@@ -67,6 +73,7 @@ public class PerformActionThread extends Thread {
 		}
 		
 		usedObject.setBeingUsed(false);
+		performer.setCurrentAction(null);
 	}
 
 	public List<Thread> getThreads() {
