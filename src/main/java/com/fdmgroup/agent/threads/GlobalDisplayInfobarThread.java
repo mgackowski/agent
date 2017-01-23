@@ -17,9 +17,10 @@ public class GlobalDisplayInfobarThread extends Thread {
 		
 		while(true) {
 			
-			for (int i=0; i<25; i++) { // Hacks.
+			for (int i=0; i<25; i++) { // Eclipse clear screen hack
 				System.out.println("");
 			}
+		    
 			for (Agent thisAgent : AgentPool.getInstance().getAgents()) {
 				displayAgentStatus(thisAgent);
 			}
