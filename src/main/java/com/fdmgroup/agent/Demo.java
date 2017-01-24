@@ -4,6 +4,7 @@ import com.fdmgroup.agent.agents.Agent;
 import com.fdmgroup.agent.agents.AgentPool;
 import com.fdmgroup.agent.agents.*;
 import com.fdmgroup.agent.objects.*;
+import com.fdmgroup.agent.outputs.LoggerExample;
 import com.fdmgroup.agent.threads.GlobalDisplayInfobarThread;
 
 public class Demo implements AgentSim {
@@ -56,6 +57,8 @@ public class Demo implements AgentSim {
 
 	public boolean run() {
 		//TODO: Return false if unsuccessful
+		LoggerExample.testLogs();
+		
 		prepareObjects();
 		prepareAgents();
 		startSim();
