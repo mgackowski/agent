@@ -3,6 +3,9 @@ package com.fdmgroup.agent.threads;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.fdmgroup.agent.actions.Action;
 import com.fdmgroup.agent.agents.Agent;
 import com.fdmgroup.agent.objects.ObjectPool;
@@ -10,15 +13,16 @@ import com.fdmgroup.agent.objects.UseableObject;
 
 public class AgentDecisionThread extends Thread {
 	
+	static Logger log = LogManager.getLogger();
 	Agent thisAgent;
 	
 	public AgentDecisionThread(Agent thisAgent) {
 		this.thisAgent = thisAgent;
+		this.setName(thisAgent.getName() + "'s decision");
 	}
 	
 	public void run() {
-		
-		//TODO: Agents should break out of actions if there is another critical need to satisfy
+		log.debug("AgentDecisionThread started for" + thisAgent.getName());
 		
 		while(thisAgent.isAlive() && !isInterrupted()) {
 			
@@ -38,10 +42,10 @@ public class AgentDecisionThread extends Thread {
 		while(!thisAgent.getActionQueue().isEmpty() && thisAgent.isAlive()) {
 			Action nextAction = thisAgent.getActionQueue().remove();
 			try {
+				log.info(thisAgent.getName() + " initiates " + nextAction.getName() + " using " + nextAction.getTiedObject());
 				nextAction.execute(thisAgent, nextAction.getTiedObject()).join(); //waits for thread
 			} catch (InterruptedException e) {
-				// TODO: Log: AgentDecisionThread interrupted while waiting for an action to execute.
-				// Automatic decision making is shut down.
+				log.debug("AgentDecisionThread interrupted");
 				interrupt();
 			}
 		}
@@ -89,7 +93,7 @@ public class AgentDecisionThread extends Thread {
 			waitSecond.join();
 		}
 		catch (InterruptedException e) {
-			//TODO: Log that the wait has been interrupted.
+			log.debug("AgentDecisionThread interrupted");
 		}
 	}
 	
@@ -148,6 +152,7 @@ public class AgentDecisionThread extends Thread {
 	
 	public Action pickNextAction(Map<Action,Float> possibilities) {
 		if (possibilities.isEmpty()) {
+			log.info("No actions are available to " + thisAgent.getName());
 			return null;
 		}
 		float maxScore = 0;	// threshold below which being idle is considered better
@@ -158,14 +163,8 @@ public class AgentDecisionThread extends Thread {
 				bestAction = thisAction;
 			}
 		}
+		//TODO: this can result in a nullPointer
+		//log.info(thisAgent.getName() + " picks " + bestAction.getName() + " as the best action (score: " + String.format("%.2f", maxScore) + ")");
 		return bestAction;
-	}
-	
-	//TODO: This should be handled by a logger
-	public void debugScores(Map<Action,Float> possibilities) {
-		System.out.println("\n═══ WELCOME TO " + thisAgent.getName() + "'s BRAIN ═══");
-		for(Action thisAction : possibilities.keySet()) {
-			System.out.println("[" + thisAction.getName() + "]" + " SCORE: " + possibilities.get(thisAction));}
-		System.out.println("═════════════════════════════════\n");
 	}
 }
