@@ -3,6 +3,9 @@ package com.fdmgroup.agent.agents;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.fdmgroup.agent.actions.Action;
 import com.fdmgroup.agent.threads.AgentDecisionThread;
 import com.fdmgroup.agent.threads.AgentDeteriorateThread;
@@ -21,6 +24,7 @@ import com.fdmgroup.agent.threads.PerformActionThread;
  */
 public class Agent {
 	
+	static Logger log = LogManager.getLogger();
 	
 	private String name;
 	private boolean alive;
@@ -39,6 +43,7 @@ public class Agent {
 		actionStatus = "...";
 		this.name = name;
 		alive = true;
+		log.info("New Agent created with name " + this.name);
 	}
 	
 	public Agent(String name, Individuality indivValues) {
@@ -46,6 +51,7 @@ public class Agent {
 		this.name = name;
 		alive = true;
 		actionStatus = "...";
+		log.info("New Agent created with name " + this.name);
 	}
 	
 	public boolean startLife() {

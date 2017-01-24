@@ -7,7 +7,7 @@ public class App
 
       AgentSim demo = new Demo();
       demo.run();
-      demo.startPrintThread();
+      //demo.startPrintThread();
         
     }
 }

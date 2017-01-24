@@ -3,6 +3,9 @@ package com.fdmgroup.agent.actions;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * This class provides a description of how an action will affect the needs of the agent.
  * Complex actions are broken down; getNextAction can provide the next link in the chain.
@@ -11,6 +14,8 @@ import java.util.Map;
  *
  */
 public class Consequence {
+	
+	static Logger log = LogManager.getLogger();
 	
 	private Map<String,Float> change = new HashMap<String,Float>();
 	private Action nextAction = null;

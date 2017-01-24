@@ -3,12 +3,16 @@ package com.fdmgroup.agent.threads;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.fdmgroup.agent.actions.Action;
 import com.fdmgroup.agent.agents.Agent;
 import com.fdmgroup.agent.objects.UseableObject;
 
 public class PerformActionThread extends Thread {
 	
+	static Logger log = LogManager.getLogger();
 	Agent performer;
 	UseableObject usedObject;
 	Action performedAction;

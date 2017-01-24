@@ -1,9 +1,13 @@
 package com.fdmgroup.agent.threads;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.fdmgroup.agent.agents.Agent;
 
 public class ChangeNeedThread extends Thread {
 	
+	static Logger log = LogManager.getLogger();
 	Agent targetAgent = null;
 	float needChangeValue = 0f;
 	String needName = "";
@@ -12,10 +16,11 @@ public class ChangeNeedThread extends Thread {
 		this.needChangeValue = needChangeValue;
 		this.targetAgent = targetAgent;
 		this.needName = needName;
-		this.setName(needName + " +" + needChangeValue + " change thread");
+		this.setName(needName + " +" + needChangeValue);
 	}
 
 	public void run() {
+		log.debug("Started changing " + needName + " of " + targetAgent.getName() + " by " + needChangeValue);
 		
 		int numSteps = Math.round(Math.abs(needChangeValue));
 		for (int step = 0; step < numSteps; step++) {
@@ -30,11 +35,11 @@ public class ChangeNeedThread extends Thread {
 			try {
 				Thread.sleep(200);
 			} catch (InterruptedException e) {
-				//TODO: Log that changing needs has been interrupted;
-				System.out.println("CHanging needs interrupted for agent/need: " + targetAgent.getName() + " " + needName);
+				log.debug("Need change thread for Agent " + targetAgent.getName() + " has been interrupted.");
 				return;
 			}
 		}
+		log.debug("Finished changing " + needName + " of " + targetAgent.getName() + " by " + needChangeValue);
 	}
 
 }

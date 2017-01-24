@@ -1,9 +1,13 @@
 package com.fdmgroup.agent.threads;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.fdmgroup.agent.agents.Agent;
 
 public class SatietyThread extends Thread {
 	
+	static Logger log = LogManager.getLogger();
 	Agent satedAgent;
 	String needName;
 	int millis;
