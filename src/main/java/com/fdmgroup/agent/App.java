@@ -13,7 +13,7 @@ public class App
       //demo.startPrintThread();
       
       SwingDisplay.createGui();
-      new SwingRepaintThread().start();
-        
+      SwingDisplay.startGui();
+      
     }
 }

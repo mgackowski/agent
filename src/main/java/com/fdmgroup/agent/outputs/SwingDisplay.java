@@ -16,43 +16,65 @@ import javax.swing.border.LineBorder;
 import com.fdmgroup.agent.agents.Agent;
 import com.fdmgroup.agent.agents.AgentPool;
 
+/**
+ * A simple Swing-powered GUI displaying the needs of all Agents.
+ * Much more user-friendly than logs.
+ * @author Mikolaj.Gackowski
+ *
+ */
 public class SwingDisplay {
 	
 	private static JFrame frame = new JFrame("Agent status");
+	
+	//TODO: Updateable components can be abstracted and stored in single list
 	private static List<JNeedBar> needBars = new ArrayList<JNeedBar>();
-	private static List<JActionTextField> actionStatuses = new ArrayList<JActionTextField>();
+	private static List<JActionTextArea> actionStatuses = new ArrayList<JActionTextArea>();
 	
 	public static void createGui() {
-		frame.setSize(500,300);
+		frame.setSize(500,350);
 		frame.setLayout(new FlowLayout());
 		
+		/* Draw a panel for every Agent */
 		for (Agent thisAgent : AgentPool.getInstance().getAgents()) {
 			
 			JPanel thisPanel = new JPanel();
 			thisPanel.setLayout (new BoxLayout (thisPanel, BoxLayout.Y_AXIS));
 			thisPanel.setBorder(BorderFactory.createCompoundBorder(new LineBorder(Color.black), new EmptyBorder(10, 10, 10, 10)));
-			frame.add(thisPanel);
 			
-			thisPanel.add(new JLabel(thisAgent.getName()));
+			JLabel nameLabel = new JLabel(thisAgent.getName());
+
+			thisPanel.add(nameLabel);
 			
-			JActionTextField status = new JActionTextField(thisAgent);
+			JActionTextArea status = new JActionTextArea(thisAgent);
 			thisPanel.add(status);
 			actionStatuses.add(status);
 			
-			for (String needName : thisAgent.getNeeds().getNeeds().keySet()) {
-				
-				thisPanel.add(new JLabel(needName));
-				
-				JNeedBar needBar = new JNeedBar(thisAgent,needName);
-				thisPanel.add(needBar);
-				needBars.add(needBar);
-			}
+			generateNeedBars(thisAgent, thisPanel);
+			
+			frame.add(thisPanel);
 		}
 		
 		frame.setVisible(true);
 	}
+	
+	public static void startGui() {
+		new SwingRepaintThread().start();
+	}
+	
+	private static void generateNeedBars(Agent thisAgent, JPanel panel) {
+		
+		/* Draw a label and bar for every need */
+		for (String needName : thisAgent.getNeeds().getNeeds().keySet()) {
+			
+			panel.add(new JLabel(needName));
+			
+			JNeedBar needBar = new JNeedBar(thisAgent,needName);
+			panel.add(needBar);
+			needBars.add(needBar);
+		}
+	}
 
-	public static JFrame getJf() {
+	public static JFrame getFrame() {
 		return frame;
 	}
 
@@ -60,12 +82,8 @@ public class SwingDisplay {
 		return needBars;
 	}
 
-	public static List<JActionTextField> getActionStatuses() {
+	public static List<JActionTextArea> getActionStatuses() {
 		return actionStatuses;
-	}
-
-	public static void setActionStatuses(List<JActionTextField> actionStatuses) {
-		SwingDisplay.actionStatuses = actionStatuses;
 	}
 	
 }

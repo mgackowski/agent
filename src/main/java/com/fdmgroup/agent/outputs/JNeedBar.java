@@ -1,9 +1,7 @@
 package com.fdmgroup.agent.outputs;
 
 import java.awt.Color;
-
 import javax.swing.JProgressBar;
-
 import com.fdmgroup.agent.agents.Agent;
 
 public class JNeedBar extends JProgressBar {

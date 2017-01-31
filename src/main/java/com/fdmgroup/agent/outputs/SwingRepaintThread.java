@@ -3,6 +3,11 @@ package com.fdmgroup.agent.outputs;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Update the Swing panel every 100 milliseconds.
+ * @author Mikolaj.Gackowski
+ *
+ */
 public class SwingRepaintThread extends Thread {
 	
 	static Logger log = LogManager.getLogger();
@@ -10,15 +15,15 @@ public class SwingRepaintThread extends Thread {
 	public void run() {
 		log.debug("Swing repaint thread started.");
 		while(true) {
-			
+			//TODO: Updateable components can be abstracted and stored in single list
 			for (JNeedBar thisBar : SwingDisplay.getNeedBars()) {
 				thisBar.update();
 			}
-			for (JActionTextField thisField : SwingDisplay.getActionStatuses()) {
-				thisField.update();
+			for (JActionTextArea thisArea : SwingDisplay.getActionStatuses()) {
+				thisArea.update();
 			}
-			SwingDisplay.getJf().repaint();
-			SwingDisplay.getJf().revalidate();
+			SwingDisplay.getFrame().repaint();
+			SwingDisplay.getFrame().revalidate();
 			
 			try {
 				Thread.sleep(100);
@@ -28,5 +33,4 @@ public class SwingRepaintThread extends Thread {
 			}
 		}
 	}
-	
 }
