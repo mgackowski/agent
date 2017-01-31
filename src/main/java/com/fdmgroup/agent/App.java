@@ -1,6 +1,7 @@
 package com.fdmgroup.agent;
 
-import com.fdmgroup.agent.outputs.SwingExample;
+import com.fdmgroup.agent.outputs.SwingDisplay;
+import com.fdmgroup.agent.outputs.SwingRepaintThread;
 
 public class App 
 {
@@ -11,7 +12,8 @@ public class App
       demo.run();
       //demo.startPrintThread();
       
-      SwingExample.createGui();
+      SwingDisplay.createGui();
+      new SwingRepaintThread().start();
         
     }
 }
