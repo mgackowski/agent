@@ -1,11 +1,10 @@
 package com.fdmgroup.agent;
 
-import com.fdmgroup.agent.outputs.SwingDisplay;
-import com.fdmgroup.agent.outputs.SwingRepaintThread;
+import com.fdmgroup.agent.swing.SwingDisplay;
 
 public class App 
 {
-    public static void main( String[] args ) throws InterruptedException
+    public static void main( String[] args )
     {
 
       AgentSim demo = new Demo();

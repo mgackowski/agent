@@ -1,12 +1,8 @@
 package com.fdmgroup.agent.threads;
 
-import java.util.Map;
-import java.util.Queue;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.fdmgroup.agent.actions.Action;
 import com.fdmgroup.agent.agents.Agent;
 
 public class AgentDeteriorateThread extends Thread {
