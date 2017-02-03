@@ -2,8 +2,14 @@ package com.fdmgroup.agent;
 
 import com.fdmgroup.agent.agents.Agent;
 import com.fdmgroup.agent.agents.AgentPool;
-import com.fdmgroup.agent.agents.*;
-import com.fdmgroup.agent.objects.*;
+import com.fdmgroup.agent.agents.FiveIndividuality;
+import com.fdmgroup.agent.objects.ObjBook;
+import com.fdmgroup.agent.objects.ObjFridge;
+import com.fdmgroup.agent.objects.ObjShower;
+import com.fdmgroup.agent.objects.ObjSingleBed;
+import com.fdmgroup.agent.objects.ObjSink;
+import com.fdmgroup.agent.objects.ObjToilet;
+import com.fdmgroup.agent.objects.ObjectPool;
 import com.fdmgroup.agent.threads.GlobalDisplayInfobarThread;
 
 public class Demo implements AgentSim {
@@ -25,7 +31,6 @@ public class Demo implements AgentSim {
 		//TODO: Return false if unsuccessful
         AgentPool.getInstance().addAgent(new Agent("Bob", new FiveIndividuality(1.2f,0.6f,1.2f,0.2f,0.12f)));
         AgentPool.getInstance().addAgent(new Agent("Alice", new FiveIndividuality(1f,0.5f,1f,0.2f,0.1f)));
-        AgentPool.getInstance().addAgent(new Agent("Sleepy Gary", new FiveIndividuality(1.1f,0.4f,1.3f,0.1f,0.4f)));
         
 		return true;
 	}
@@ -55,6 +60,7 @@ public class Demo implements AgentSim {
 
 	public boolean run() {
 		//TODO: Return false if unsuccessful
+		
 		prepareObjects();
 		prepareAgents();
 		startSim();

@@ -17,9 +17,10 @@ public class GlobalDisplayInfobarThread extends Thread {
 		
 		while(true) {
 			
-			for (int i=0; i<25; i++) { // Hacks.
+			for (int i=0; i<25; i++) { // Eclipse clear screen hack
 				System.out.println("");
 			}
+		    
 			for (Agent thisAgent : AgentPool.getInstance().getAgents()) {
 				displayAgentStatus(thisAgent);
 			}
@@ -53,6 +54,13 @@ public class GlobalDisplayInfobarThread extends Thread {
 			System.out.print(" (down " + thisAgent.getIndivValues().getDownRate(thisNeed) + "/s)");
 		}
 		System.out.print("\nACTION : " + thisAgent.getActionStatus());
+		if (thisAgent.getCurrentAction() != null) {
+			System.out.print("\nTHREAD : ");
+			for (Thread thisThread : thisAgent.getCurrentAction().getThreads()) {
+				System.out.print("[" + thisThread.getName() + "]");
+			}
+		}
+		
 		System.out.println("");
 	}
 	
@@ -76,12 +84,17 @@ public class GlobalDisplayInfobarThread extends Thread {
 			blocks = 10;
 		}
 		for (int i = 0; i < blocks; i++) {
-			System.out.print("█");
+			if (percentage > 10) {
+				System.out.print("█");
+			}
+			else {
+				System.out.print("▓");
+			}
 		}
 		for (int i = 0; i < (10 - blocks); i++) {
 			System.out.print("░");
 		}
-		System.out.print(" " + Math.floor(percentage) + "%");
+		System.out.print(" " + String.format("%.1f", percentage) + "%");
 	}
 	
 }

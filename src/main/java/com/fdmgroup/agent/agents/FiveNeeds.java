@@ -8,11 +8,11 @@ public class FiveNeeds implements Needs {
 	private Map<String,Float> needs = new HashMap<String,Float>();
 	
 	public FiveNeeds() {
-		needs.put("FOOD", 80f);
-		needs.put("HYGIENE", 80f);
-		needs.put("BLADDER", 80f);
-		needs.put("FUN", 80f);
-		needs.put("ENERGY", 80f);
+		needs.put("FOOD", 30f);
+		needs.put("HYGIENE", 30f);
+		needs.put("BLADDER", 30f);
+		needs.put("FUN", 30f);
+		needs.put("ENERGY", 30f);
 	}
 	
 	public float getNeed(String needName){

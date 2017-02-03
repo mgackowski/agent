@@ -23,7 +23,7 @@ public class ActNumberOne implements Action {
 	
 	public Consequence getConsequences() {
 		consequences.getAllChanges().put("BLADDER", 30f);
-		consequences.getAllChanges().put("HYGIENE", -10f);
+		//consequences.getAllChanges().put("HYGIENE", -10f); TODO: implement when satiety is per-need
 		consequences.setNextAction(new ActFlush(tiedObject));
 		return consequences;
 	}

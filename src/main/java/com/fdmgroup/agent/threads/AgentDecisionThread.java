@@ -3,6 +3,9 @@ package com.fdmgroup.agent.threads;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.fdmgroup.agent.actions.Action;
 import com.fdmgroup.agent.agents.Agent;
 import com.fdmgroup.agent.objects.ObjectPool;
@@ -10,53 +13,91 @@ import com.fdmgroup.agent.objects.UseableObject;
 
 public class AgentDecisionThread extends Thread {
 	
+	static Logger log = LogManager.getLogger();
 	Agent thisAgent;
 	
 	public AgentDecisionThread(Agent thisAgent) {
 		this.thisAgent = thisAgent;
+		this.setName(thisAgent.getName() + "'s decision");
 	}
 	
 	public void run() {
+		log.debug("AgentDecisionThread started for" + thisAgent.getName());
 		
-		//TODO: Agents should break out of actions if there is another critical need to satisfy
-		//TODO: Alive condition must be checked more often
-		
-		while(thisAgent.isAlive()) {
-			while(!thisAgent.getActionQueue().isEmpty()) {
-				Action nextAction = thisAgent.getActionQueue().remove();
-				try {
-					nextAction.execute(thisAgent, nextAction.getTiedObject()).join(); //waits for thread
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
+		while(thisAgent.isAlive() && !isInterrupted()) {
 			
-			Map<Action,Float> possibilities = new HashMap<Action,Float>();
-			for(UseableObject singleObject : ObjectPool.getInstance().getObjects()) {
-				for (Action singleAction : singleObject.advertiseActions()) {
-					possibilities.put(singleAction, attenuatedScoreAction(singleAction));
-				}
-			}
-			Action nextAction = pickNextAction(possibilities);
+			// While Agent has actions in the queue, perform them
+			performActionsInQueue();
 			
-			/* If there's nothing to do, wait it out */
-			if (nextAction == null) {
-				Thread waitSecond = new WaitThread(1000);
-				waitSecond.start();
-				thisAgent.setActionStatus("wait (no compelling actions available)");
-				try {
-					waitSecond.join();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			else { // else, add next best action to the queue
-				thisAgent.getActionQueue().add(nextAction);
+			if (thisAgent.isAlive() && !isInterrupted()) { //Agent might have died while performing Actions
+				// Query the environment for possibilities
+				Map<Action,Float> possibilities = queryEnvironmentForPossibilities();
+				// Add new action to queue, or do something else 
+				reactToPossibilities(possibilities);
 			}
 		}
 	}
 	
-	public float simpleScoreAction(Action thisAction) {
+	public void performActionsInQueue() {
+		while(!thisAgent.getActionQueue().isEmpty() && thisAgent.isAlive()) {
+			Action nextAction = thisAgent.getActionQueue().remove();
+			try {
+				log.info(thisAgent.getName() + " initiates " + nextAction.getName() + " using " + nextAction.getTiedObject());
+				nextAction.execute(thisAgent, nextAction.getTiedObject()).join(); //waits for thread
+			} catch (InterruptedException e) {
+				log.debug("AgentDecisionThread interrupted");
+				interrupt();
+			}
+		}
+	}
+	
+	public Map<Action, Float> queryEnvironmentForPossibilities() {
+		Map<Action,Float> possibilities = new HashMap<Action,Float>();
+		for(UseableObject singleObject : ObjectPool.getInstance().getObjects()) {
+			for (Action singleAction : singleObject.advertiseActions()) {
+				possibilities.put(singleAction, attenuatedScoreActionForAllNeeds(singleAction));
+			}
+		}
+		return possibilities;
+	}
+	
+	public Map<Action, Float> queryEnvironmentForPossibilities(String singleNeedName) {
+		Map<Action,Float> possibilities = new HashMap<Action,Float>();
+		for(UseableObject singleObject : ObjectPool.getInstance().getObjects()) {
+			for (Action singleAction : singleObject.advertiseActions()) {
+				possibilities.put(singleAction, attenuatedScoreActionForSingleNeed(singleAction, singleNeedName));
+			}
+		}
+		return possibilities;
+	}
+	
+	public void reactToPossibilities(Map<Action, Float> possibilities) {
+		// Pick the best action from the possibilities
+		Action nextAction = pickNextAction(possibilities);
+		
+		// If there is a next action, add it to the queue
+		if (nextAction != null) {
+			thisAgent.getActionQueue().add(nextAction);
+		}
+		else {
+			performFallbackActions();
+		}
+	}
+	
+	public void performFallbackActions() {
+		// Wait for one second and hope for the situation to change
+		Thread waitSecond = new WaitThread(1000);
+		waitSecond.start();
+		thisAgent.setActionStatus("wait (no compelling actions available)");
+		try {
+			waitSecond.join();
+		}
+		catch (InterruptedException e) {
+			log.debug("AgentDecisionThread interrupted");
+		}
+	}
+	
+	public float simpleScoreActionForAllNeeds(Action thisAction) {
 		float sum = 0;
 		for (String needName : thisAgent.getNeeds().getNeeds().keySet()) {
 			float current = thisAgent.getNeeds().getNeed(needName); // add current need level
@@ -73,7 +114,7 @@ public class AgentDecisionThread extends Thread {
 		return sum;
 	}
 	
-	public float attenuatedScoreAction(Action thisAction) {
+	public float attenuatedScoreActionForAllNeeds(Action thisAction) {
 		
 		//TODO: Different equations for different needs?
 		//TODO: Individual modifiers?
@@ -89,43 +130,41 @@ public class AgentDecisionThread extends Thread {
 		 */
 		float sum = 0;
 		for (String needName : thisAgent.getNeeds().getNeeds().keySet()) {
-			float current = thisAgent.getNeeds().getNeed(needName);
-			float delta = thisAction.getPromises().getChange(needName);
-			
-			if (0 < (current + delta) && (current+delta) <= 100) {
-				sum += 100/current - 100/(current+delta);
-			}
-			if ((current+delta) > 100) {
-				sum += 100/current - 100/(current+delta) - current/1000*(current+delta-100)*(current+delta-100);
-			}
+			sum += attenuatedScoreActionForSingleNeed(thisAction, needName);
 		}
 		return sum;
 	}
 	
+	public float attenuatedScoreActionForSingleNeed(Action thisAction, String needName) {
+		
+		float score = 0;
+		float current = thisAgent.getNeeds().getNeed(needName);
+		float delta = thisAction.getPromises().getChange(needName);
+		
+		if (0 < (current + delta) && (current+delta) <= 100) {
+			score = 100/current - 100/(current+delta);
+		}
+		if ((current+delta) > 100) {
+			score = 100/current - 100/(current+delta) - current/1000*(current+delta-100)*(current+delta-100);
+		}
+		return score;
+	}
+	
 	public Action pickNextAction(Map<Action,Float> possibilities) {
-		/* If no action scores greater than zero, this will return null */
-		
-		//debugScores(possibilities);
-		
 		if (possibilities.isEmpty()) {
+			log.info("No actions are available to " + thisAgent.getName());
 			return null;
 		}
-		
-		float maxScore = 0;
-		Action bestAction = null;	//maybe replace with Idle for safety?
+		float maxScore = 0;	// threshold below which being idle is considered better
+		Action bestAction = null;
 		for(Action thisAction : possibilities.keySet()) {
 			if (possibilities.get(thisAction) > maxScore) {
 				maxScore = possibilities.get(thisAction);
 				bestAction = thisAction;
 			}
 		}
+		//TODO: this can result in a nullPointer
+		//log.info(thisAgent.getName() + " picks " + bestAction.getName() + " as the best action (score: " + String.format("%.2f", maxScore) + ")");
 		return bestAction;
-	}
-	
-	private void debugScores(Map<Action,Float> possibilities) {
-		System.out.println("\n═══ WELCOME TO " + thisAgent.getName() + "'s BRAIN ═══");
-		for(Action thisAction : possibilities.keySet()) {
-			System.out.println("[" + thisAction.getName() + "]" + " SCORE: " + possibilities.get(thisAction));}
-		System.out.println("═════════════════════════════════\n");
 	}
 }

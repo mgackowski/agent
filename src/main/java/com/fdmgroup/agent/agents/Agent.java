@@ -3,9 +3,13 @@ package com.fdmgroup.agent.agents;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.fdmgroup.agent.actions.Action;
 import com.fdmgroup.agent.threads.AgentDecisionThread;
 import com.fdmgroup.agent.threads.AgentDeteriorateThread;
+import com.fdmgroup.agent.threads.PerformActionThread;
 
 /**
  * The Agent is the main focus of the program; it has Needs it will seek to satisfy,
@@ -20,6 +24,7 @@ import com.fdmgroup.agent.threads.AgentDeteriorateThread;
  */
 public class Agent {
 	
+	static Logger log = LogManager.getLogger();
 	
 	private String name;
 	private boolean alive;
@@ -30,11 +35,15 @@ public class Agent {
 	private Needs needs = new FiveNeeds();
 	private Queue<Action> actionQueue = new ConcurrentLinkedQueue<Action>();
 	
+	private AgentDecisionThread decisionMaking;
+	private PerformActionThread currentAction;
+	
 	public Agent(String name) {
 		indivValues = new FiveIndividuality(1f, 0.5f, 1f, 0.2f, 0.1f);
 		actionStatus = "...";
 		this.name = name;
 		alive = true;
+		log.info("New Agent created with name " + this.name);
 	}
 	
 	public Agent(String name, Individuality indivValues) {
@@ -42,19 +51,20 @@ public class Agent {
 		this.name = name;
 		alive = true;
 		actionStatus = "...";
+		log.info("New Agent created with name " + this.name);
 	}
 	
 	public boolean startLife() {
 		
 		Thread deteriorate = new AgentDeteriorateThread(this);
 		deteriorate.start();
-		Thread decide = new AgentDecisionThread(this);
-		decide.start();
+		decisionMaking = new AgentDecisionThread(this);
+		decisionMaking.start();
 		return true;
 	}
 	
 	public boolean kill() {
-		this.actionStatus = "dead";
+		this.actionStatus = "failure";
 		this.alive = false;
 		return true;
 	}
@@ -101,5 +111,21 @@ public class Agent {
 
 	public Needs getNeeds() {
 		return needs;
+	}
+
+	public PerformActionThread getCurrentAction() {
+		return currentAction;
+	}
+
+	public void setCurrentAction(PerformActionThread currentAction) {
+		this.currentAction = currentAction;
+	}
+
+	public AgentDecisionThread getDecisionMaking() {
+		return decisionMaking;
+	}
+
+	public void setDecisionMaking(AgentDecisionThread decisionMaking) {
+		this.decisionMaking = decisionMaking;
 	}
 }
