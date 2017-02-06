@@ -5,7 +5,10 @@ import com.fdmgroup.agent.objects.UseableObject;
 import com.fdmgroup.agent.threads.PerformActionThread;
 
 /**
- * Actions are performed by Agents. They should be as atomic as possible.
+ * Actions are performed when they appear attractive to an Agent.
+ * They contain Promises which affect whether they will be added to an Agent's action queue.
+ * They also contain Consequences which describe how an Agent's state will change after
+ * the Action is performed.
  * @author Mikolaj Gackowski
  *
  */
@@ -32,6 +35,7 @@ public interface Action {
 	 * in this class and affect the agent over time (in other words, perform this action).
 	 * TODO: Preferably, PerformActionThread should be abstract
 	 */
+	@Deprecated
 	public PerformActionThread execute(Agent performer, UseableObject usedObject);
 	
 	/*
@@ -39,6 +43,7 @@ public interface Action {
 	 * Agents interact with Actions directly and do not store information about Objects.
 	 * TODO: Consider this in a major refactor, if execute() could be moved to Objects.
 	 */
+	@Deprecated
 	public UseableObject getTiedObject();
 	
 	/*
@@ -46,6 +51,7 @@ public interface Action {
 	 * deteriorating. Recommended to set this equal or greater than the minimum required
 	 * length of the action in execute().
 	 */
+	
 	public int getSatietyLength();
 
 }
