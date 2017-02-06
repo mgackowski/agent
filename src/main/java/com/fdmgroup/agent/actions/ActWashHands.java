@@ -17,7 +17,7 @@ public class ActWashHands implements Action {
 	}
 
 	public Promise getPromises() {
-		advertisedPromise.getChange().put("HYGIENE", 15f);
+		advertisedPromise.getChanges().put("HYGIENE", 15f);
 		return advertisedPromise;
 	}
 	

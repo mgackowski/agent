@@ -17,7 +17,7 @@ public class ActTakeQuickShower implements Action {
 	}
 
 	public Promise getPromises() {
-		advertisedPromise.getChange().put("HYGIENE", 40f);
+		advertisedPromise.getChanges().put("HYGIENE", 40f);
 		return advertisedPromise;
 	}
 	

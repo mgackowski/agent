@@ -17,7 +17,7 @@ public class ActEatSnack implements Action {
 	}
 
 	public Promise getPromises() {
-		advertisedPromise.getChange().put("FOOD", 15f);
+		advertisedPromise.getChanges().put("FOOD", 15f);
 		return advertisedPromise;
 	}
 	

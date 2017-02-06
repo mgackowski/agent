@@ -17,7 +17,7 @@ public class ActTakeNap implements Action {
 	}
 
 	public Promise getPromises() {
-		advertisedPromise.getChange().put("ENERGY", 20f);
+		advertisedPromise.getChanges().put("ENERGY", 20f);
 		return advertisedPromise;
 	}
 	

@@ -17,7 +17,7 @@ public class ActNumberTwo implements Action {
 	}
 
 	public Promise getPromises() {
-		advertisedPromise.getChange().put("BLADDER", 70f);
+		advertisedPromise.getChanges().put("BLADDER", 70f);
 		return advertisedPromise;
 	}
 	

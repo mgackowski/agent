@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Actions will communicate with agents, telling them ("promising") which needs they can satisfy.
- * This class provides a description of such promises for an individual action.
+ * Actions contain Promises which "advertise" the needs they can satisfy.
+ * This class provides a description of a set of promises for an individual action.
  * Note that the promised values can be different from the actual consequences (see Consequence).
  * The class can and should be extended for more advanced object/action implementations.
  * @author Mikolaj Gackowski
@@ -35,7 +35,7 @@ public class Promise {
 		}
 	}
 
-	public Map<String, Float> getChange() {
+	public Map<String, Float> getChanges() {
 		return change;
 	}
 }

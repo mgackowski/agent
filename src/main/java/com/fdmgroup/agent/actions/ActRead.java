@@ -17,7 +17,7 @@ public class ActRead implements Action {
 	}
 
 	public Promise getPromises() {
-		advertisedPromise.getChange().put("FUN", 50f);
+		advertisedPromise.getChanges().put("FUN", 50f);
 		return advertisedPromise;
 	}
 	

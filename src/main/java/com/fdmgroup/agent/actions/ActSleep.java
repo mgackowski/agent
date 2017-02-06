@@ -17,7 +17,7 @@ public class ActSleep implements Action {
 	}
 
 	public Promise getPromises() {
-		advertisedPromise.getChange().put("ENERGY", 80f);
+		advertisedPromise.getChanges().put("ENERGY", 80f);
 		return advertisedPromise;
 	}
 	
