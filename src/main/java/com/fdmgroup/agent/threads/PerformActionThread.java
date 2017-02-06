@@ -42,8 +42,8 @@ public class PerformActionThread extends Thread {
 		performer.setCurrentAction(this);
 		performer.setActionStatus(performedAction.getName() + " using " + usedObject.getName() + " (id: " + this.getId() + ")");
 		
-		for (String needName : performedAction.getConsequences().getAllChanges().keySet()) {
-			Thread changeNeed = new ChangeNeedThread(performer, needName, performedAction.getConsequences().getNeedChange(needName));
+		for (String needName : performedAction.getConsequences().keySet()) {
+			Thread changeNeed = new ChangeNeedThread(performer, needName, performedAction.getConsequence(needName).getChange());
 			threads.add(changeNeed);
 			changeNeed.start();
 			
@@ -72,8 +72,8 @@ public class PerformActionThread extends Thread {
 			}
 		}
 
-		if (performedAction.getConsequences().getNextAction() != null) {
-			performer.getActionQueue().add(performedAction.getConsequences().getNextAction());
+		if (performedAction.getNextAction() != null) {
+			performer.getActionQueue().add(performedAction.getNextAction());
 		}
 		
 		usedObject.setBeingUsed(false);

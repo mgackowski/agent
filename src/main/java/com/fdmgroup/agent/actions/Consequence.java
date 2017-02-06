@@ -7,8 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * This class provides a description of how an action will affect the needs of the agent.
- * Complex actions are broken down; getNextAction can provide the next link in the chain.
+ * (Refactoring)
  * The class can and should be extended for more advanced object/action implementations.
  * @author Mikolaj Gackowski
  *
@@ -17,53 +16,40 @@ public class Consequence {
 	
 	static Logger log = LogManager.getLogger();
 	
-	private Map<String,Float> change = new HashMap<String,Float>();
-	private Action nextAction = null;
+	private String need;
+	private float change;
+	private long satietyLength;
 	
-	public Consequence() {}
-	
-	public Consequence(Map<String, Float> change) {
+	/*
+	 * This constructor will set a default satiety length assuming that needs change at 5 units/s.
+	 * TODO: Change this value when you change speed.
+	 */
+	public Consequence(String need, float change) {
+		this.need = need;
 		this.change = change;
+		this.satietyLength = Math.round(change * 200); //TODO: Change
 	}
 	
-	public Consequence(Action nextAction) {
-		this.nextAction = nextAction;
-	}
-
-	public Consequence(Map<String, Float> change, Action nextAction) {
-		super();
+	/*
+	 * This constructor allows to set a custom satiety length in millis.
+	 * TODO: Change this when timer becomes independent from seconds.
+	 */
+	public Consequence(String need, float change, long satietyLength) {
+		this.need = need;
 		this.change = change;
-		this.nextAction = nextAction;
+		this.satietyLength = satietyLength;
 	}
 
-	public float getNeedChange(String needName){
-		if (change.containsKey(needName)) {
-			return change.get(needName);
-		}
-		else {
-			return 0f;	//important to default to zero: decision thread depends on it
-		}
+	public String getNeed() {
+		return need;
 	}
 
-	public boolean setNeedChange(String needName, float newValue){
-		if (change.containsKey(needName)) {
-			change.put(needName, newValue);
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-
-	public Map<String, Float> getAllChanges() {
+	public float getChange() {
 		return change;
 	}
-	
-	public Action getNextAction() {
-		return nextAction;
+
+	public long getSatietyLength() {
+		return satietyLength;
 	}
 
-	public void setNextAction(Action nextAction) {
-		this.nextAction = nextAction;
-	}
 }

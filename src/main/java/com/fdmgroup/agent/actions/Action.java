@@ -1,5 +1,7 @@
 package com.fdmgroup.agent.actions;
 
+import java.util.Map;
+
 import com.fdmgroup.agent.agents.Agent;
 import com.fdmgroup.agent.objects.UseableObject;
 import com.fdmgroup.agent.threads.PerformActionThread;
@@ -20,10 +22,15 @@ public interface Action {
 	public Promise getPromises();
 	
 	/*
-	 * Retrieves a Consequence object - a description of needs the action actually
-	 * will satisfy, along with the next action (if any) to form a chain.
+	 * 
 	 */
-	public Consequence getConsequences();
+	public Map<String, Consequence> getConsequences();
+	
+	/*
+	 *TODO: This needs to return zero when the need is not defined.
+	 *Perhaps have it return an Exception?
+	 */
+	public Consequence getConsequence(String needName);
 	
 	/*
 	 * Retrieves the name of the action, e.g. "eat snack", "take nap".
@@ -51,7 +58,11 @@ public interface Action {
 	 * deteriorating. Recommended to set this equal or greater than the minimum required
 	 * length of the action in execute().
 	 */
-	
+	@Deprecated
 	public int getSatietyLength();
+	
+	public Action getNextAction();
+	
+	
 
 }

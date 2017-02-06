@@ -3,13 +3,6 @@ package com.fdmgroup.agent;
 import com.fdmgroup.agent.agents.Agent;
 import com.fdmgroup.agent.agents.AgentPool;
 import com.fdmgroup.agent.agents.FiveIndividuality;
-import com.fdmgroup.agent.objects.ObjBook;
-import com.fdmgroup.agent.objects.ObjFridge;
-import com.fdmgroup.agent.objects.ObjShower;
-import com.fdmgroup.agent.objects.ObjSingleBed;
-import com.fdmgroup.agent.objects.ObjSink;
-import com.fdmgroup.agent.objects.ObjToilet;
-import com.fdmgroup.agent.objects.ObjectPool;
 import com.fdmgroup.agent.threads.GlobalDisplayInfobarThread;
 
 public class Demo implements AgentSim {
@@ -17,12 +10,12 @@ public class Demo implements AgentSim {
 	public boolean prepareObjects() {
 		//TODO: Return false if unsuccessful
 
-        ObjectPool.getInstance().addObject(new ObjFridge());
+        /*ObjectPool.getInstance().addObject(new ObjFridge());
         ObjectPool.getInstance().addObject(new ObjSingleBed());
         ObjectPool.getInstance().addObject(new ObjToilet());
         ObjectPool.getInstance().addObject(new ObjShower());
         ObjectPool.getInstance().addObject(new ObjSink());
-        ObjectPool.getInstance().addObject(new ObjBook());
+        ObjectPool.getInstance().addObject(new ObjBook());*/
         
         return true;
 	}
