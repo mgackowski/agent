@@ -3,8 +3,8 @@ package com.fdmgroup.agent.objects;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fdmgroup.agent.actions.ActWashHands;
 import com.fdmgroup.agent.actions.Action;
+import com.fdmgroup.agent.deprecated.ActWashHands;
 
 public class ObjSink implements UseableObject {
 	

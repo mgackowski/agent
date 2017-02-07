@@ -1,4 +1,4 @@
-package com.fdmgroup.agent.threads;
+package com.fdmgroup.agent.deprecated;
 
 import com.fdmgroup.agent.agents.Agent;
 import com.fdmgroup.agent.agents.AgentPool;

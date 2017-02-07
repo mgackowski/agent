@@ -1,30 +1,31 @@
-package com.fdmgroup.agent.actions;
+package com.fdmgroup.agent.deprecated;
 
+import com.fdmgroup.agent.actions.Action;
+import com.fdmgroup.agent.actions.Consequence;
+import com.fdmgroup.agent.actions.Promise;
 import com.fdmgroup.agent.agents.Agent;
 import com.fdmgroup.agent.objects.UseableObject;
 import com.fdmgroup.agent.threads.PerformActionThread;
 
-public class ActNumberOne implements Action {
+public class ActWashHands implements Action {
 	
-	private String name = "number one";
+	private String name = "wash hands";
 	private Promise advertisedPromise = new Promise();
 	private Consequence consequences = new Consequence();
-	private int satietyLength = 15000; // TODO: consider moving to Consequence
+	private int satietyLength = 8000; // TODO: consider moving to Consequence
 	private UseableObject tiedObject; // execute() could be moved to UseableObject, then this field becomes unnecessary
 
-	public ActNumberOne(UseableObject tiedObject) {
+	public ActWashHands(UseableObject tiedObject) {
 		this.tiedObject = tiedObject;
 	}
 
 	public Promise getPromises() {
-		advertisedPromise.getChanges().put("BLADDER", 30f);
+		advertisedPromise.getChanges().put("HYGIENE", 15f);
 		return advertisedPromise;
 	}
 	
 	public Consequence getConsequences() {
-		consequences.getAllChanges().put("BLADDER", 30f);
-		//consequences.getAllChanges().put("HYGIENE", -10f); TODO: implement when satiety is per-need
-		consequences.setNextAction(new ActFlush(tiedObject));
+		consequences.getAllChanges().put("HYGIENE", 15f);
 		return consequences;
 	}
 	

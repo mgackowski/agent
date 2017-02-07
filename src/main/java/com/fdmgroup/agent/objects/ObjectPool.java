@@ -4,20 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A singleton containing all objects available to agents.
+ * Containing all objects available to agents and methods to create, retrieve
+ * and delete them.
  * @author Mikolaj Gackowski
  *
  */
 public class ObjectPool {
 	
-	private static ObjectPool instance = new ObjectPool();
 	private List<UseableObject> objects = new ArrayList<UseableObject>();
 	
 	private ObjectPool() {}
-	
-	public static ObjectPool getInstance() {
-		return instance;
-	}
 	
 	public List<UseableObject> getObjects() {
 		return objects;
@@ -25,6 +21,10 @@ public class ObjectPool {
 	
 	public boolean addObject(UseableObject newObject) {
 		return objects.add(newObject);
+	}
+	
+	public boolean removeObject(UseableObject objectToRemove) {
+		return objects.remove(objectToRemove);
 	}
 
 }

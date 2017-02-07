@@ -3,7 +3,7 @@ package com.fdmgroup.agent;
 import com.fdmgroup.agent.agents.Agent;
 import com.fdmgroup.agent.agents.AgentPool;
 import com.fdmgroup.agent.agents.FiveIndividuality;
-import com.fdmgroup.agent.threads.GlobalDisplayInfobarThread;
+import com.fdmgroup.agent.deprecated.GlobalDisplayInfobarThread;
 
 public class Demo implements AgentSim {
 

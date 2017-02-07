@@ -3,9 +3,9 @@ package com.fdmgroup.agent.objects;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fdmgroup.agent.actions.ActTakeQuickShower;
-import com.fdmgroup.agent.actions.ActTakeShower;
 import com.fdmgroup.agent.actions.Action;
+import com.fdmgroup.agent.deprecated.ActTakeQuickShower;
+import com.fdmgroup.agent.deprecated.ActTakeShower;
 
 public class ObjShower implements UseableObject {
 	

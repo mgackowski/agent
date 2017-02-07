@@ -3,9 +3,9 @@ package com.fdmgroup.agent.objects;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fdmgroup.agent.actions.ActNumberOne;
-import com.fdmgroup.agent.actions.ActNumberTwo;
 import com.fdmgroup.agent.actions.Action;
+import com.fdmgroup.agent.deprecated.ActNumberOne;
+import com.fdmgroup.agent.deprecated.ActNumberTwo;
 
 public class ObjToilet implements UseableObject {
 	

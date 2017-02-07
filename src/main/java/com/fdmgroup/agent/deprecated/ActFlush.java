@@ -1,34 +1,35 @@
-package com.fdmgroup.agent.actions;
+package com.fdmgroup.agent.deprecated;
 
+import com.fdmgroup.agent.actions.Action;
+import com.fdmgroup.agent.actions.Consequence;
+import com.fdmgroup.agent.actions.Promise;
 import com.fdmgroup.agent.agents.Agent;
 import com.fdmgroup.agent.objects.UseableObject;
 import com.fdmgroup.agent.threads.PerformActionThread;
 
-public class ActTakeNap implements Action {
+public class ActFlush implements Action {
 	
-	private String name = "take nap";
+	private String name = "flush";
 	private Promise advertisedPromise = new Promise();
 	private Consequence consequences = new Consequence();
-	private int satietyLength = 10000; // TODO: consider moving to Consequence
+	private int satietyLength = 0; // TODO: consider moving to Consequence
 	private UseableObject tiedObject; // execute() could be moved to UseableObject, then this field becomes unnecessary
 
-	public ActTakeNap(UseableObject tiedObject) {
+	public ActFlush(UseableObject tiedObject) {
 		this.tiedObject = tiedObject;
 	}
 
 	public Promise getPromises() {
-		advertisedPromise.getChanges().put("ENERGY", 20f);
 		return advertisedPromise;
 	}
 	
 	public Consequence getConsequences() {
-		consequences.getAllChanges().put("ENERGY", 20f);
 		return consequences;
 	}
 	
 	/* Refactor idea: move this to UseableObject */
 	public PerformActionThread execute(Agent performer, UseableObject usedObject) {
-		PerformActionThread actionExecution = new PerformActionThread(performer, usedObject, this, 10000);
+		PerformActionThread actionExecution = new PerformActionThread(performer, usedObject, this, 2000);
 		actionExecution.start();
 		return actionExecution;
 	}

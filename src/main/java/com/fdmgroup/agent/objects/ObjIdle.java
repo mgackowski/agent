@@ -3,8 +3,8 @@ package com.fdmgroup.agent.objects;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fdmgroup.agent.actions.ActWait;
 import com.fdmgroup.agent.actions.Action;
+import com.fdmgroup.agent.deprecated.ActWait;
 
 /**
  * Deprecated. The AgentDecisionThread will now use WaitThread as fallback when

@@ -66,6 +66,7 @@ public class Agent {
 	public boolean kill() {
 		this.actionStatus = "failure";
 		this.alive = false;
+		log.info(this.name + " is finished.");
 		return true;
 	}
 

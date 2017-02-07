@@ -3,8 +3,8 @@ package com.fdmgroup.agent.objects;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fdmgroup.agent.actions.ActRead;
 import com.fdmgroup.agent.actions.Action;
+import com.fdmgroup.agent.deprecated.ActRead;
 
 public class ObjBook implements UseableObject {
 	

@@ -2,9 +2,10 @@ package com.fdmgroup.agent.objects;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.fdmgroup.agent.actions.ActSleep;
-import com.fdmgroup.agent.actions.ActTakeNap;
+
 import com.fdmgroup.agent.actions.Action;
+import com.fdmgroup.agent.deprecated.ActSleep;
+import com.fdmgroup.agent.deprecated.ActTakeNap;
 
 public class ObjSingleBed implements UseableObject {
 	

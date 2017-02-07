@@ -1,8 +1,5 @@
 package com.fdmgroup.agent.actions;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
