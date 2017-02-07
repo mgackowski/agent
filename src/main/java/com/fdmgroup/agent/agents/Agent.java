@@ -6,19 +6,17 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.fdmgroup.agent.actions.Action;
-import com.fdmgroup.agent.threads.AgentDecisionThread;
-import com.fdmgroup.agent.threads.AgentDeteriorateThread;
-import com.fdmgroup.agent.threads.PerformActionThread;
+import com.fdmgroup.agent.objects.ObjectAction;
 
 /**
+ * TODO: Rewrite comment to include refactor
  * The Agent is the main focus of the program; it has Needs it will seek to satisfy,
  * as well as Individuality which affects how its need levels change.
  * An Agent's "life" begins a series of threads which affect its needs and individual values,
  * most notably a deterioration thread (Agent's need levels decrease over time) and a
  * decision making thread (performing Actions and picking the best available ones).
  * The class can and should be extended when a more complex simulation is needed.
- * //TODO: Add method to restore default IVs (and possibly new field/object to store them).
+ * TODO: Add method to restore default IVs (and possibly new field/object to store them).
  * @author Mikolaj Gackowski
  *
  */
@@ -29,42 +27,28 @@ public class Agent {
 	private String name;
 	private boolean alive;
 	
-	private String actionStatus;
-	private Individuality indivValues;
+	private Individuality indivValues;	//TODO: Have base values and modified values
 	
 	private Needs needs = new FiveNeeds();
-	private Queue<Action> actionQueue = new ConcurrentLinkedQueue<Action>();
 	
-	private AgentDecisionThread decisionMaking;
-	private PerformActionThread currentAction;
+	private ObjectAction currentAction;
+	private Queue<ObjectAction> actionQueue = new ConcurrentLinkedQueue<ObjectAction>();
 	
 	public Agent(String name) {
-		indivValues = new FiveIndividuality(1f, 0.5f, 1f, 0.2f, 0.1f);
-		actionStatus = "...";
 		this.name = name;
 		alive = true;
+		indivValues = new FiveIndividuality(1f, 0.5f, 1f, 0.2f, 0.1f);
 		log.info("New Agent created with name " + this.name);
 	}
 	
 	public Agent(String name, Individuality indivValues) {
-		this.indivValues = indivValues;
 		this.name = name;
 		alive = true;
-		actionStatus = "...";
+		this.indivValues = indivValues;
 		log.info("New Agent created with name " + this.name);
 	}
 	
-	public boolean startLife() {
-		
-		Thread deteriorate = new AgentDeteriorateThread(this);
-		deteriorate.start();
-		decisionMaking = new AgentDecisionThread(this);
-		decisionMaking.start();
-		return true;
-	}
-	
 	public boolean kill() {
-		this.actionStatus = "failure";
 		this.alive = false;
 		log.info(this.name + " is finished.");
 		return true;
@@ -86,14 +70,6 @@ public class Agent {
 		this.alive = alive;
 	}
 
-	public String getActionStatus() {
-		return actionStatus;
-	}
-
-	public void setActionStatus(String actionStatus) {
-		this.actionStatus = actionStatus;
-	}
-
 	public Individuality getIndivValues() {
 		return indivValues;
 	}
@@ -102,11 +78,11 @@ public class Agent {
 		this.indivValues = indivValues;
 	}
 
-	public Queue<Action> getActionQueue() {
+	public Queue<ObjectAction> getActionQueue() {
 		return actionQueue;
 	}
 
-	public void setActionQueue(Queue<Action> actionQueue) {
+	public void setActionQueue(Queue<ObjectAction> actionQueue) {
 		this.actionQueue = actionQueue;
 	}
 
@@ -114,19 +90,12 @@ public class Agent {
 		return needs;
 	}
 
-	public PerformActionThread getCurrentAction() {
+	public ObjectAction getCurrentAction() {
 		return currentAction;
 	}
 
-	public void setCurrentAction(PerformActionThread currentAction) {
+	public void setCurrentAction(ObjectAction currentAction) {
 		this.currentAction = currentAction;
 	}
-
-	public AgentDecisionThread getDecisionMaking() {
-		return decisionMaking;
-	}
-
-	public void setDecisionMaking(AgentDecisionThread decisionMaking) {
-		this.decisionMaking = decisionMaking;
-	}
+	
 }

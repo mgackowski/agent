@@ -16,13 +16,13 @@ public class JActionTextArea extends JTextArea {
 	
 	JActionTextArea(Agent agent) {
 		this.thisAgent = agent;
-		if (thisAgent.getActionStatus() != null) {
-			super.setText(thisAgent.getActionStatus());
+		if (thisAgent.getCurrentAction() != null) {
+			super.setText(thisAgent.getCurrentAction().getAction().getName() + " using " + thisAgent.getCurrentAction().getObject().getName());
 		}
 		else {
 			super.setText("...");
 		}
-		//super.setColumns(5);
+		super.setColumns(5);
 		super.setBorder(BorderFactory.createCompoundBorder(new LineBorder(Color.black), new EmptyBorder(10, 10, 10, 10)));
 		super.setLineWrap(true);
 		super.setWrapStyleWord(true);
@@ -31,7 +31,12 @@ public class JActionTextArea extends JTextArea {
 	}
 	
 	public void update() {
-		super.setText(thisAgent.getActionStatus());
+		if (thisAgent.getCurrentAction() != null) {
+			super.setText(thisAgent.getCurrentAction().getAction().getName() + " using " + thisAgent.getCurrentAction().getObject().getName());
+		}
+		else {
+			super.setText("...");
+		}
 	}
 	
 }

@@ -13,8 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
+import com.fdmgroup.agent.AgentSim;
 import com.fdmgroup.agent.agents.Agent;
-import com.fdmgroup.agent.agents.AgentPool;
 
 /**
  * A simple Swing-powered GUI displaying the needs of all Agents.
@@ -24,18 +24,23 @@ import com.fdmgroup.agent.agents.AgentPool;
  */
 public class SwingDisplay {
 	
-	private static JFrame frame = new JFrame("Agent status");
+	private AgentSim simulation;
+	private JFrame frame = new JFrame("Agent status");
+	
+	public SwingDisplay(AgentSim simulationToPresent) {
+		this.simulation = simulationToPresent;
+	}
 	
 	//TODO: Updateable components can be abstracted and stored in single list
 	private static List<JNeedBar> needBars = new ArrayList<JNeedBar>();
 	private static List<JActionTextArea> actionStatuses = new ArrayList<JActionTextArea>();
 	
-	public static void createGui() {
+	public void createGui() {
 		frame.setSize(500,350);
 		frame.setLayout(new FlowLayout());
 		
 		/* Draw a panel for every Agent */
-		for (Agent thisAgent : AgentPool.getInstance().getAgents()) {
+		for (Agent thisAgent : simulation.getAgentPool().getAgents()) {
 			
 			JPanel thisPanel = new JPanel();
 			thisPanel.setLayout (new BoxLayout (thisPanel, BoxLayout.Y_AXIS));
@@ -57,8 +62,8 @@ public class SwingDisplay {
 		frame.setVisible(true);
 	}
 	
-	public static void startGui() {
-		new SwingRepaintThread().start();
+	public void startGui() {
+		new SwingRepaintThread(this).start();
 	}
 	
 	private static void generateNeedBars(Agent thisAgent, JPanel panel) {
@@ -74,15 +79,15 @@ public class SwingDisplay {
 		}
 	}
 
-	public static JFrame getFrame() {
+	public JFrame getFrame() {
 		return frame;
 	}
 
-	public static List<JNeedBar> getNeedBars() {
+	public List<JNeedBar> getNeedBars() {
 		return needBars;
 	}
 
-	public static List<JActionTextArea> getActionStatuses() {
+	public List<JActionTextArea> getActionStatuses() {
 		return actionStatuses;
 	}
 	

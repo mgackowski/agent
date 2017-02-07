@@ -4,21 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A singleton containing all agents.
+ * 
  * @author Mikolaj Gackowski
  *
  */
 public class AgentPool {
 	
-	private static AgentPool instance = new AgentPool();
 	private List<Agent> agents = new ArrayList<Agent>();
 	private boolean aliveAgents = false;
-	
-	private AgentPool() {}
-	
-	public static AgentPool getInstance() {
-		return instance;
-	}
 
 	public List<Agent> getAgents() {
 		return agents;

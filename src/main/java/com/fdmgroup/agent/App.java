@@ -11,8 +11,10 @@ public class App
       demo.run();
       //demo.startPrintThread();
       
-      SwingDisplay.createGui();
-      SwingDisplay.startGui();
+      //TODO: consider moving this to Demo
+      SwingDisplay display = new SwingDisplay(demo);
+      display.createGui();
+      display.startGui();
       
     }
 }

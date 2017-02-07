@@ -13,8 +13,6 @@ public class ObjectPool {
 	
 	private List<UseableObject> objects = new ArrayList<UseableObject>();
 	
-	private ObjectPool() {}
-	
 	public List<UseableObject> getObjects() {
 		return objects;
 	}
