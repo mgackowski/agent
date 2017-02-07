@@ -24,7 +24,7 @@ public class Consequence {
 	public Consequence(String need, float change) {
 		this.need = need;
 		this.change = change;
-		this.satietyLength = Math.round(change * 200); //TODO: Change
+		this.satietyLength = 0;
 	}
 	
 	/*
