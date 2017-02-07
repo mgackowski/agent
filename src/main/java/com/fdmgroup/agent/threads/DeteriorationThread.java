@@ -5,12 +5,12 @@ import org.apache.logging.log4j.Logger;
 
 import com.fdmgroup.agent.agents.Agent;
 
-public class AgentDeteriorateThread extends Thread {
+public class DeteriorationThread extends Thread {
 	
 	static Logger log = LogManager.getLogger();
 	Agent thisAgent;
 	
-	public AgentDeteriorateThread(Agent thisAgent) {
+	public DeteriorationThread(Agent thisAgent) {
 		this.thisAgent = thisAgent;
 		this.setName(thisAgent.getName() + "'s deterioration");
 	}
@@ -38,7 +38,7 @@ public class AgentDeteriorateThread extends Thread {
 			}
 			
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(1000); // Tick should be speed-dependent
 			} catch (InterruptedException e) {
 				log.debug("Deterioration thread for Agent " + thisAgent.getName() + " has been interrupted.");
 				return;
@@ -46,17 +46,18 @@ public class AgentDeteriorateThread extends Thread {
 		}
 	}
 	
+	//TODO: This needs to be in DecisionThread
 	public void satisfyCriticalState(String needName) {
 		/* The only effect of this is interrupting and starting a new action every second,
 		 * a better version must be implemented. But it does help with survival slightly.
 		 */
-		log.debug("satisfyCriticalState() of need " + needName + " called for Agent " + thisAgent.getName());
+		/*log.debug("satisfyCriticalState() of need " + needName + " called for Agent " + thisAgent.getName());
 		if (thisAgent.getCurrentAction() != null) {
 			for (Thread runningThread : thisAgent.getCurrentAction().getThreads()) {
 				if (!runningThread.isInterrupted()) {
 					runningThread.interrupt();
 				}
 			}
-		}
+		}*/
 	}
 }

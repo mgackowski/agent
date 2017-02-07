@@ -11,18 +11,18 @@ import com.fdmgroup.agent.agents.Agent;
 import com.fdmgroup.agent.objects.ObjectPool;
 import com.fdmgroup.agent.objects.UseableObject;
 
-public class AgentDecisionThread extends Thread {
+public class DecisionThread extends Thread {
 	
 	static Logger log = LogManager.getLogger();
 	Agent thisAgent;
 	
-	public AgentDecisionThread(Agent thisAgent) {
+	public DecisionThread(Agent thisAgent) {
 		this.thisAgent = thisAgent;
 		this.setName(thisAgent.getName() + "'s decision");
 	}
 	
 	public void run() {
-		log.debug("AgentDecisionThread started for" + thisAgent.getName());
+		log.debug("DecisionThread started for" + thisAgent.getName());
 		
 		while(thisAgent.isAlive() && !isInterrupted()) {
 			
@@ -45,7 +45,7 @@ public class AgentDecisionThread extends Thread {
 				log.info(thisAgent.getName() + " initiates " + nextAction.getName() + " using " + nextAction.getTiedObject());
 				nextAction.execute(thisAgent, nextAction.getTiedObject()).join(); //waits for thread
 			} catch (InterruptedException e) {
-				log.debug("AgentDecisionThread interrupted");
+				log.debug("DecisionThread interrupted");
 				interrupt();
 			}
 		}
@@ -93,7 +93,7 @@ public class AgentDecisionThread extends Thread {
 			waitSecond.join();
 		}
 		catch (InterruptedException e) {
-			log.debug("AgentDecisionThread interrupted");
+			log.debug("DecisionThread interrupted");
 		}
 	}
 	

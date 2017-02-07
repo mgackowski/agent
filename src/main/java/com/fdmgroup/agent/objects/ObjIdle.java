@@ -7,7 +7,7 @@ import com.fdmgroup.agent.actions.Action;
 import com.fdmgroup.agent.deprecated.ActWait;
 
 /**
- * Deprecated. The AgentDecisionThread will now use WaitThread as fallback when
+ * Deprecated. The DecisionThread will now use WaitThread as fallback when
  * no beneficial actions are available.
  * @author Mikolaj.Gackowski
  *

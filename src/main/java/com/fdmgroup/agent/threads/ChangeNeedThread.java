@@ -8,9 +8,10 @@ import com.fdmgroup.agent.agents.Agent;
 public class ChangeNeedThread extends Thread {
 	
 	static Logger log = LogManager.getLogger();
-	Agent targetAgent = null;
-	float needChangeValue = 0f;
-	String needName = "";
+	
+	Agent targetAgent;
+	float needChangeValue;
+	String needName;
 	
 	public ChangeNeedThread(Agent targetAgent, String needName, float needChangeValue) {
 		this.needChangeValue = needChangeValue;
@@ -33,7 +34,7 @@ public class ChangeNeedThread extends Thread {
 			}
 			targetAgent.getNeeds().changeNeed(needName, (needChangeValue / numSteps));
 			try {
-				Thread.sleep(200);
+				Thread.sleep(200);	//TODO: Speed!
 			} catch (InterruptedException e) {
 				log.debug("Need change thread for Agent " + targetAgent.getName() + " has been interrupted.");
 				return;
