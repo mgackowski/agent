@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.fdmgroup.agent.agents.Agent;
 import com.fdmgroup.agent.agents.AgentPool;
+import com.fdmgroup.agent.agents.BasicIndividuality;
 import com.fdmgroup.agent.agents.FiveIndividuality;
 import com.fdmgroup.agent.objects.ObjBook;
 import com.fdmgroup.agent.objects.ObjFridge;
@@ -38,8 +39,8 @@ public class Demo implements AgentSim {
 
 	public boolean prepareAgents() {
 		//TODO: Return false if unsuccessful
-        agents.addAgent(new Agent("Bob", new FiveIndividuality(1.2f,2.6f,1.2f,0.2f,0.12f)));
-        agents.addAgent(new Agent("Alice", new FiveIndividuality(1f,2.5f,1f,0.2f,0.1f)));
+        agents.addAgent(new Agent("Bob", new FiveIndividuality(1.2f,0.6f,1.2f,0.2f,0.12f)));
+        agents.addAgent(new Agent("Alice", new FiveIndividuality(1f,0.5f,1f,0.2f,0.1f)));
         
 		return true;
 	}

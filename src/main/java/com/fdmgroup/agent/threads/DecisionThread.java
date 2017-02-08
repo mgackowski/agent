@@ -15,6 +15,7 @@ import com.fdmgroup.agent.objects.UseableObject;
 public class DecisionThread extends Thread {
 	
 	static Logger log = LogManager.getLogger();
+	
 	Agent thisAgent;
 	List<UseableObject> availableObjects;	//TODO: This can be abstracted out to a Perceive class
 	
@@ -48,13 +49,20 @@ public class DecisionThread extends Thread {
 	
 	public void performActionsInQueue() {
 		while(!thisAgent.getActionQueue().isEmpty() && thisAgent.isAlive()) {
-			//ObjectAction nextAction = thisAgent.getActionQueue().getAction.remove();
+			
 			try {
 				log.info(thisAgent.getName() + " initiates a new thread to perform an action.");
 				Thread perform = new PerformActionThread(thisAgent, 1000);
 				perform.start();
-				perform.join();
-				//nextAction.execute(thisAgent, nextAction.getTiedObject()).join(); //waits for thread
+				//Thread interruptor = new CriticalInterruptorThread(perform, thisAgent);
+				//interruptor.start();
+				perform.join();	//waits
+				//listener-interruptor-might interrupt all threads in perform, and it will end naturally
+				//listener-interruttor will then set a flag in this thread and end itself
+				//if the flag is detected as set, force execution or an optimal action if it exists
+				//if action was done successfully, lower the flag
+				//if there was no action, keep the flag???
+				
 			} catch (InterruptedException e) {
 				log.debug("DecisionThread interrupted");
 				interrupt();
@@ -183,5 +191,23 @@ public class DecisionThread extends Thread {
 		//TODO: this can result in a nullPointer
 		//log.info(thisAgent.getName() + " picks " + bestAction.getName() + " as the best action (score: " + String.format("%.2f", maxScore) + ")");
 		return bestAction;
+	}
+	
+	public void setAvailableObjects(List<UseableObject> availableObjects) {
+		this.availableObjects = availableObjects;
+	}
+
+	public void introduceCriticalState(String needName, PerformActionThread actionThread) {
+		// if critical flag is true
+		// execute the block once to cancel current actions
+		// set it to false
+		log.debug("satisfyCriticalState() of need " + needName + " called for Agent " + thisAgent.getName());
+		if (thisAgent.getCurrentAction() != null) {
+			for (Thread runningThread : actionThread.getThreads()) {
+				if (!runningThread.isInterrupted()) {
+					runningThread.interrupt();
+				}
+			}
+		}
 	}
 }

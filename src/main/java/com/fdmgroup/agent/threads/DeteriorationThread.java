@@ -29,7 +29,7 @@ public class DeteriorationThread extends Thread {
 				}
 				
 				if (thisAgent.getNeeds().getNeed(needName) < 10) {
-					satisfyCriticalState(needName);
+					//satisfyCriticalState(needName);
 				}
 			}
 			
@@ -42,18 +42,4 @@ public class DeteriorationThread extends Thread {
 		}
 	}
 	
-	//TODO: This needs to be in DecisionThread
-	public void satisfyCriticalState(String needName) {
-		/* The only effect of this is interrupting and starting a new action every second,
-		 * a better version must be implemented. But it does help with survival slightly.
-		 */
-		/*log.debug("satisfyCriticalState() of need " + needName + " called for Agent " + thisAgent.getName());
-		if (thisAgent.getCurrentAction() != null) {
-			for (Thread runningThread : thisAgent.getCurrentAction().getThreads()) {
-				if (!runningThread.isInterrupted()) {
-					runningThread.interrupt();
-				}
-			}
-		}*/
-	}
 }

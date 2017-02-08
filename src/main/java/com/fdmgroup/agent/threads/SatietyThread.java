@@ -11,7 +11,7 @@ public class SatietyThread extends Thread {
 	Agent satedAgent;
 	String needName;
 	long millis;
-	Thread pairedActionThread = null; 
+	Thread pairedActionThread = null;	// This can be a PerformAction or ChangeNeed thread, different behaviours
 	
 	public SatietyThread(Agent satedAgent, String needName, long millis) {
 		this.satedAgent = satedAgent;
@@ -36,7 +36,7 @@ public class SatietyThread extends Thread {
 		this.satedAgent = satedAgent;
 		this.needName = needName;
 		this.millis = millis;
-		this.pairedActionThread = finishTogether; //pair it with the perform action thread
+		this.pairedActionThread = finishTogether;
 	}
 	
 	/* Run for the duration of the pairedActionThread (typically a PerformActionThread), if specified.

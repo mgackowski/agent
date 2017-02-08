@@ -32,7 +32,7 @@ public class PerformActionThread extends Thread {
 		super();
 		this.performer = performer;
 		this.requiredMinLength = minLength;
-		//this.setName(performer.get); TODO
+		this.setName(performer.getName() + "'s PerformActionThread");
 	}
 
 	/*public PerformActionThread(Agent performer, UseableObject usedObject, Action performedAction) {
@@ -60,8 +60,7 @@ public class PerformActionThread extends Thread {
 			Thread changeNeed = new ChangeNeedThread(performer, needName, performedAction.getAction().getConsequence(needName).getChange());
 			threads.add(changeNeed);
 			changeNeed.start();
-			
-			new SatietyThread(performer, needName, this, performedAction.getAction().getConsequence(needName).getSatietyLength()).start();
+			new SatietyThread(performer, needName, changeNeed, performedAction.getAction().getConsequence(needName).getSatietyLength()).start();
 		}
 		
 		if (requiredMinLength > 0){
