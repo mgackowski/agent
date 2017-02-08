@@ -10,10 +10,10 @@ public class SatietyThread extends Thread {
 	static Logger log = LogManager.getLogger();
 	Agent satedAgent;
 	String needName;
-	int millis;
+	long millis;
 	Thread pairedActionThread = null; 
 	
-	public SatietyThread(Agent satedAgent, String needName, int millis) {
+	public SatietyThread(Agent satedAgent, String needName, long millis) {
 		this.satedAgent = satedAgent;
 		this.needName = needName;
 		this.millis = millis;
@@ -29,7 +29,14 @@ public class SatietyThread extends Thread {
 		this.satedAgent = satedAgent;
 		this.needName = needName;
 		this.millis = 0;
-		this.pairedActionThread = finishTogether;
+		this.pairedActionThread = finishTogether; //pair it with the perform action thread
+	}
+	
+	public SatietyThread(Agent satedAgent, String needName, Thread finishTogether, long millis) {
+		this.satedAgent = satedAgent;
+		this.needName = needName;
+		this.millis = millis;
+		this.pairedActionThread = finishTogether; //pair it with the perform action thread
 	}
 	
 	/* Run for the duration of the pairedActionThread (typically a PerformActionThread), if specified.

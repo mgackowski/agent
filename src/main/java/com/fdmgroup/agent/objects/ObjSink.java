@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fdmgroup.agent.actions.Action;
-import com.fdmgroup.agent.deprecated.ActWashHands;
+import com.fdmgroup.agent.actions.ActWashHands;
 
 public class ObjSink implements UseableObject {
 	
@@ -13,7 +13,7 @@ public class ObjSink implements UseableObject {
 	boolean beingUsed = false;
 	
 	public ObjSink() {
-		allActions.add(new ActWashHands(this));
+		allActions.add(new ActWashHands());
 	}
 	
 	public List<Action> advertiseActions() {

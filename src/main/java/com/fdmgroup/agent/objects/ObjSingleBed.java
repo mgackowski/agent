@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fdmgroup.agent.actions.Action;
-import com.fdmgroup.agent.deprecated.ActSleep;
-import com.fdmgroup.agent.deprecated.ActTakeNap;
+import com.fdmgroup.agent.actions.ActSleep;
+import com.fdmgroup.agent.actions.ActTakeNap;
 
 public class ObjSingleBed implements UseableObject {
 	
@@ -14,8 +14,8 @@ public class ObjSingleBed implements UseableObject {
 	boolean beingUsed = false;
 	
 	public ObjSingleBed() {
-		allActions.add(new ActSleep(this));
-		allActions.add(new ActTakeNap(this));
+		allActions.add(new ActSleep());
+		allActions.add(new ActTakeNap());
 	}
 	
 	public List<Action> advertiseActions() {

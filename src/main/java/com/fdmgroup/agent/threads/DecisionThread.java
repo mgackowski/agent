@@ -1,6 +1,7 @@
 package com.fdmgroup.agent.threads;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -8,17 +9,24 @@ import org.apache.logging.log4j.Logger;
 
 import com.fdmgroup.agent.actions.Action;
 import com.fdmgroup.agent.agents.Agent;
-import com.fdmgroup.agent.objects.ObjectPool;
+import com.fdmgroup.agent.objects.ObjectAction;
 import com.fdmgroup.agent.objects.UseableObject;
 
 public class DecisionThread extends Thread {
 	
 	static Logger log = LogManager.getLogger();
 	Agent thisAgent;
+	List<UseableObject> availableObjects;	//TODO: This can be abstracted out to a Perceive class
 	
 	public DecisionThread(Agent thisAgent) {
 		this.thisAgent = thisAgent;
 		this.setName(thisAgent.getName() + "'s decision");
+	}
+	
+	public DecisionThread(Agent thisAgent, List<UseableObject> availableObjects) {
+		this.thisAgent = thisAgent;
+		this.setName(thisAgent.getName() + "'s decision");
+		this.availableObjects = availableObjects;
 	}
 	
 	public void run() {
@@ -31,7 +39,7 @@ public class DecisionThread extends Thread {
 			
 			if (thisAgent.isAlive() && !isInterrupted()) { //Agent might have died while performing Actions
 				// Query the environment for possibilities
-				Map<Action,Float> possibilities = queryEnvironmentForPossibilities();
+				Map<ObjectAction,Float> possibilities = queryEnvironmentForPossibilities(availableObjects);	//TODO: Abstract this into another class dependent on ObjectPool
 				// Add new action to queue, or do something else 
 				reactToPossibilities(possibilities);
 			}
@@ -40,10 +48,13 @@ public class DecisionThread extends Thread {
 	
 	public void performActionsInQueue() {
 		while(!thisAgent.getActionQueue().isEmpty() && thisAgent.isAlive()) {
-			Action nextAction = thisAgent.getActionQueue().remove();
+			//ObjectAction nextAction = thisAgent.getActionQueue().getAction.remove();
 			try {
-				log.info(thisAgent.getName() + " initiates " + nextAction.getName() + " using " + nextAction.getTiedObject());
-				nextAction.execute(thisAgent, nextAction.getTiedObject()).join(); //waits for thread
+				log.info(thisAgent.getName() + " initiates a new thread to perform an action.");
+				Thread perform = new PerformActionThread(thisAgent, 1000);
+				perform.start();
+				perform.join();
+				//nextAction.execute(thisAgent, nextAction.getTiedObject()).join(); //waits for thread
 			} catch (InterruptedException e) {
 				log.debug("DecisionThread interrupted");
 				interrupt();
@@ -51,29 +62,32 @@ public class DecisionThread extends Thread {
 		}
 	}
 	
-	public Map<Action, Float> queryEnvironmentForPossibilities() {
-		Map<Action,Float> possibilities = new HashMap<Action,Float>();
-		for(UseableObject singleObject : ObjectPool.getInstance().getObjects()) {
+	public Map<ObjectAction, Float> queryEnvironmentForPossibilities(List<UseableObject> objectList) {
+		Map<ObjectAction,Float> possibilities = new HashMap<ObjectAction,Float>();
+		for(UseableObject singleObject : objectList) {
 			for (Action singleAction : singleObject.advertiseActions()) {
-				possibilities.put(singleAction, attenuatedScoreActionForAllNeeds(singleAction));
+				possibilities.put(new ObjectAction(singleObject, singleAction), attenuatedScoreActionForAllNeeds(singleAction));
 			}
 		}
 		return possibilities;
 	}
 	
-	public Map<Action, Float> queryEnvironmentForPossibilities(String singleNeedName) {
-		Map<Action,Float> possibilities = new HashMap<Action,Float>();
-		for(UseableObject singleObject : ObjectPool.getInstance().getObjects()) {
+	//TODO: Write method to update the local object pool
+	//TODO: Abstract out the ObjectPool-dependent functionality to a separate Perceive class
+	
+	public Map<ObjectAction, Float> queryEnvironmentForPossibilities(String singleNeedName, List<UseableObject> objectList) {
+		Map<ObjectAction,Float> possibilities = new HashMap<ObjectAction,Float>();
+		for(UseableObject singleObject : objectList) {
 			for (Action singleAction : singleObject.advertiseActions()) {
-				possibilities.put(singleAction, attenuatedScoreActionForSingleNeed(singleAction, singleNeedName));
+				possibilities.put(new ObjectAction(singleObject, singleAction), attenuatedScoreActionForSingleNeed(singleAction, singleNeedName));
 			}
 		}
 		return possibilities;
 	}
 	
-	public void reactToPossibilities(Map<Action, Float> possibilities) {
+	public void reactToPossibilities(Map<ObjectAction, Float> possibilities) {
 		// Pick the best action from the possibilities
-		Action nextAction = pickNextAction(possibilities);
+		ObjectAction nextAction = pickNextAction(possibilities);
 		
 		// If there is a next action, add it to the queue
 		if (nextAction != null) {
@@ -88,7 +102,7 @@ public class DecisionThread extends Thread {
 		// Wait for one second and hope for the situation to change
 		Thread waitSecond = new WaitThread(1000);
 		waitSecond.start();
-		thisAgent.setActionStatus("wait (no compelling actions available)");
+		//thisAgent.setActionStatus("wait (no compelling actions available)");
 		try {
 			waitSecond.join();
 		}
@@ -150,14 +164,17 @@ public class DecisionThread extends Thread {
 		return score;
 	}
 	
-	public Action pickNextAction(Map<Action,Float> possibilities) {
+	public ObjectAction pickNextAction(Map<ObjectAction,Float> possibilities) {
 		if (possibilities.isEmpty()) {
 			log.info("No actions are available to " + thisAgent.getName());
 			return null;
 		}
+		
+		log.debug("Available decisions: " + possibilities.keySet().toString());
+		
 		float maxScore = 0;	// threshold below which being idle is considered better
-		Action bestAction = null;
-		for(Action thisAction : possibilities.keySet()) {
+		ObjectAction bestAction = null;
+		for(ObjectAction thisAction : possibilities.keySet()) {
 			if (possibilities.get(thisAction) > maxScore) {
 				maxScore = possibilities.get(thisAction);
 				bestAction = thisAction;

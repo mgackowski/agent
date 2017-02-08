@@ -3,6 +3,8 @@ package com.fdmgroup.agent.actions;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fdmgroup.agent.objects.ObjectAction;
+
 public class BasicAction implements Action{
 
 	protected String name = "";

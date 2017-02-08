@@ -19,5 +19,12 @@ public class ObjectAction {
 	public Action getAction() {
 		return action;
 	}
+
+	@Override
+	public String toString() {
+		return "ObjectAction [" + object.getName() + " : " + action.getName() + "]";
+	}
+	
+	
 	
 }

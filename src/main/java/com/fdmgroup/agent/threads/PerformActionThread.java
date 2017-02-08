@@ -6,21 +6,36 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.fdmgroup.agent.actions.Action;
 import com.fdmgroup.agent.agents.Agent;
-import com.fdmgroup.agent.objects.UseableObject;
+import com.fdmgroup.agent.objects.ObjectAction;
 
 public class PerformActionThread extends Thread {
 	
 	static Logger log = LogManager.getLogger();
+	
 	Agent performer;
-	UseableObject usedObject;
-	Action performedAction;
+	
+	//UseableObject usedObject;
+	//Action performedAction;
+	
 	int requiredMinLength = 0;
 	
 	List<Thread> threads = new ArrayList<Thread>();
 	
-	public PerformActionThread(Agent performer, UseableObject usedObject, Action performedAction) {
+	public PerformActionThread(Agent performer) {
+		super();
+		this.performer = performer;
+		this.setName(performer.getName() + "'s PerformActionThread");
+	}
+	
+	public PerformActionThread(Agent performer, int minLength) {
+		super();
+		this.performer = performer;
+		this.requiredMinLength = minLength;
+		//this.setName(performer.get); TODO
+	}
+
+	/*public PerformActionThread(Agent performer, UseableObject usedObject, Action performedAction) {
 		this.performer = performer;
 		this.usedObject = usedObject;
 		this.performedAction = performedAction;
@@ -33,23 +48,20 @@ public class PerformActionThread extends Thread {
 		this.performedAction = performedAction;
 		this.requiredMinLength = requiredMinLength;
 		this.setName(performedAction.getName() + " thread " + this.getId());
-	}
+	}*/
 
 	public void run() {
 		
-		usedObject.setBeingUsed(true);
+		ObjectAction performedAction = performer.getActionQueue().peek();
+		performedAction.getObject().setBeingUsed(true);
+		performer.setCurrentAction(performedAction);
 		
-		performer.setCurrentAction(this);
-		performer.setActionStatus(performedAction.getName() + " using " + usedObject.getName() + " (id: " + this.getId() + ")");
-		
-		for (String needName : performedAction.getConsequences().keySet()) {
-			Thread changeNeed = new ChangeNeedThread(performer, needName, performedAction.getConsequence(needName).getChange());
+		for (String needName : performedAction.getAction().getConsequences().keySet()) {
+			Thread changeNeed = new ChangeNeedThread(performer, needName, performedAction.getAction().getConsequence(needName).getChange());
 			threads.add(changeNeed);
 			changeNeed.start();
 			
-			// TODO: single satiety value affecting all needs, possibly future change
-			// TODO: this invocation will temporarily ignore millis to simplify the program
-			new SatietyThread(performer, needName, this).start();
+			new SatietyThread(performer, needName, this, performedAction.getAction().getConsequence(needName).getSatietyLength()).start();
 		}
 		
 		if (requiredMinLength > 0){
@@ -65,18 +77,19 @@ public class PerformActionThread extends Thread {
 			} catch (InterruptedException e) {
 				// To interrupt an action, an interrupt will have to be invoked on every
 				// single thread in the thread list - use interruptThreads() provided
-				//TODO: Log: one of this action's threads has been interrupted, action is cancelled 
-				usedObject.setBeingUsed(false);
+				log.debug("Thread interrupted: " + thisThread.getName());
+				performedAction.getObject().setBeingUsed(false);
 				performer.setCurrentAction(null);
 				return;
 			}
 		}
 
-		if (performedAction.getNextAction() != null) {
-			performer.getActionQueue().add(performedAction.getNextAction());
+		if (performedAction.getAction().getNextAction() != null) {
+			performer.getActionQueue().add(new ObjectAction(performedAction.getObject(), performedAction.getAction().getNextAction()));
 		}
 		
-		usedObject.setBeingUsed(false);
+		performer.getActionQueue().poll();
+		performedAction.getObject().setBeingUsed(false);
 		performer.setCurrentAction(null);
 	}
 

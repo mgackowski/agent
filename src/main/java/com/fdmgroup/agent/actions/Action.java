@@ -2,9 +2,7 @@ package com.fdmgroup.agent.actions;
 
 import java.util.Map;
 
-import com.fdmgroup.agent.agents.Agent;
-import com.fdmgroup.agent.objects.UseableObject;
-import com.fdmgroup.agent.threads.PerformActionThread;
+import com.fdmgroup.agent.objects.ObjectAction;
 
 /**
  * Actions are performed when they appear attractive to an Agent. They contain

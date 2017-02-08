@@ -23,13 +23,9 @@ public class DeteriorationThread extends Thread {
 				if (thisAgent.getNeeds().getNeed(needName) > 0) {
 					thisAgent.getNeeds().changeNeed(needName, -1 * thisAgent.getIndivValues().getDownRate(needName));
 				}
-				else if (needName == "FOOD") {//TODO: make more general: define special behaviour class?
-					thisAgent.getNeeds().setNeed("FOOD", 0f);
-					thisAgent.kill();
-				}
 				else { //TODO: Temporary measure for dramatic effect
 					thisAgent.getNeeds().setNeed(needName, 0f);
-					thisAgent.kill();
+					//thisAgent.kill(); TODO
 				}
 				
 				if (thisAgent.getNeeds().getNeed(needName) < 10) {

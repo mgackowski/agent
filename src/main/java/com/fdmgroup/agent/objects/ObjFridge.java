@@ -3,6 +3,7 @@ package com.fdmgroup.agent.objects;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fdmgroup.agent.actions.ActEatMeal;
 import com.fdmgroup.agent.actions.ActEatSnack;
 import com.fdmgroup.agent.actions.Action;
 
@@ -14,7 +15,7 @@ public class ObjFridge implements UseableObject {
 	
 	public ObjFridge() {
 		allActions.add(new ActEatSnack());
-		//TODO: add ActEatMeal when refactored
+		allActions.add(new ActEatMeal());
 	}
 	
 	public List<Action> advertiseActions() {

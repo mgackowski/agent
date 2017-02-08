@@ -1,8 +1,7 @@
 package com.fdmgroup.agent.deprecated;
 
+import com.fdmgroup.agent.AgentSim;
 import com.fdmgroup.agent.agents.Agent;
-import com.fdmgroup.agent.agents.AgentPool;
-import com.fdmgroup.agent.objects.ObjectPool;
 import com.fdmgroup.agent.objects.UseableObject;
 
 /**
@@ -11,7 +10,14 @@ import com.fdmgroup.agent.objects.UseableObject;
  * @author Mikolaj Gackowski
  *
  */
+@Deprecated
 public class GlobalDisplayInfobarThread extends Thread {
+	
+	private AgentSim simulation;
+	
+	public GlobalDisplayInfobarThread(AgentSim simulation) {
+		this.simulation = simulation;
+	}
 
 	public void run() {
 		
@@ -21,11 +27,11 @@ public class GlobalDisplayInfobarThread extends Thread {
 				System.out.println("");
 			}
 		    
-			for (Agent thisAgent : AgentPool.getInstance().getAgents()) {
+			for (Agent thisAgent : simulation.getAgentPool().getAgents()) {
 				displayAgentStatus(thisAgent);
 			}
 			System.out.println("\n◘ OBJECTS:");
-			for (UseableObject thisObject : ObjectPool.getInstance().getObjects()) {
+			for (UseableObject thisObject : simulation.getObjectPool().getObjects()) {
 				displayObjectStatus(thisObject);
 			}
 			try {
@@ -53,13 +59,13 @@ public class GlobalDisplayInfobarThread extends Thread {
 			printPercentageBar(thisAgent.getNeeds().getNeed(thisNeed));
 			System.out.print(" (down " + thisAgent.getIndivValues().getDownRate(thisNeed) + "/s)");
 		}
-		System.out.print("\nACTION : " + thisAgent.getActionStatus());
-		if (thisAgent.getCurrentAction() != null) {
+		System.out.print("\nACTION : " + thisAgent.getCurrentAction().getAction().getName());
+		/*if (thisAgent.getCurrentAction() != null) {
 			System.out.print("\nTHREAD : ");
 			for (Thread thisThread : thisAgent.getCurrentAction().getThreads()) {
 				System.out.print("[" + thisThread.getName() + "]");
 			}
-		}
+		}*/
 		
 		System.out.println("");
 	}

@@ -17,10 +17,6 @@ public class Consequence {
 	private float change;
 	private long satietyLength;
 	
-	/*
-	 * This constructor will set a default satiety length assuming that needs change at 5 units/s.
-	 * TODO: Change this value when you change speed.
-	 */
 	public Consequence(String need, float change) {
 		this.need = need;
 		this.change = change;
