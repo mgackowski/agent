@@ -35,6 +35,10 @@ public class DecisionThread extends Thread {
 		
 		while(thisAgent.isAlive() && !isInterrupted()) {
 			
+			//Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+			//Thread[] threadArray = threadSet.toArray(new Thread[threadSet.size()]);
+			//System.out.println(threadArray);
+			
 			// While Agent has actions in the queue, perform them
 			performActionsInQueue();
 			
@@ -52,10 +56,10 @@ public class DecisionThread extends Thread {
 			
 			try {
 				log.info(thisAgent.getName() + " initiates a new thread to perform an action.");
-				Thread perform = new PerformActionThread(thisAgent, 1000);
+				PerformActionThread perform = new PerformActionThread(thisAgent, 1000);
 				perform.start();
-				//Thread interruptor = new CriticalInterruptorThread(perform, thisAgent);
-				//interruptor.start();
+				Thread interruptor = new CriticalInterruptorThread(perform, thisAgent);
+				interruptor.start();
 				perform.join();	//waits
 				//listener-interruptor-might interrupt all threads in perform, and it will end naturally
 				//listener-interruttor will then set a flag in this thread and end itself

@@ -1,6 +1,8 @@
 package com.fdmgroup.agent.threads;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -20,7 +22,7 @@ public class PerformActionThread extends Thread {
 	
 	int requiredMinLength = 0;
 	
-	List<Thread> threads = new ArrayList<Thread>();
+	List<Thread> threads = Collections.synchronizedList(new ArrayList<Thread>());
 	
 	public PerformActionThread(Agent performer) {
 		super();
@@ -96,10 +98,18 @@ public class PerformActionThread extends Thread {
 		return threads;
 	}
 	
-	public void interruptThreads() {
-		for (Thread thisThread : threads) {
-			thisThread.interrupt();
+	public synchronized void interruptThreads() {
+		log.debug(this.getName() + "'s threads are interrupting...");
+		try {
+			for (Thread thisThread : threads) {
+				thisThread.interrupt();
+			}
 		}
+		catch (ConcurrentModificationException e) {
+			//TODO: Graceful way of handling this.
+			log.error("Concurrent modification when interrupting threads.");
+		}
+
 	}
 
 }
