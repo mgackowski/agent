@@ -11,47 +11,42 @@ import org.apache.logging.log4j.Logger;
 import com.fdmgroup.agent.agents.Agent;
 import com.fdmgroup.agent.objects.ObjectAction;
 
+/**
+ * The Thread that "performs" an Action on behalf of an Agent. It starts a number of other Threads,
+ * such as ChangeNeedThread, WaitThread and SatietyThread, to simulate the satisfaction of a need over time.
+ * @author Mikolaj.Gackowski
+ *
+ */
 public class PerformActionThread extends Thread {
 	
 	static Logger log = LogManager.getLogger();
 	
 	Agent performer;
-	
-	//UseableObject usedObject;
-	//Action performedAction;
-	
 	int requiredMinLength = 0;
 	
 	List<Thread> threads = Collections.synchronizedList(new ArrayList<Thread>());
 	
+	/**
+	 * @param performer the Agent performing the Action
+	 */
 	public PerformActionThread(Agent performer) {
-		super();
 		this.performer = performer;
 		this.setName(performer.getName() + "'s PerformActionThread");
 	}
 	
+	/**
+	 * @param performer the Agent performing the Action
+	 * @param minLength a minimum length (in milliseconds) the Action should take
+	 */
 	public PerformActionThread(Agent performer, int minLength) {
-		super();
 		this.performer = performer;
 		this.requiredMinLength = minLength;
 		this.setName(performer.getName() + "'s PerformActionThread");
 	}
 
-	/*public PerformActionThread(Agent performer, UseableObject usedObject, Action performedAction) {
-		this.performer = performer;
-		this.usedObject = usedObject;
-		this.performedAction = performedAction;
-		this.setName(performedAction.getName() + " thread " + this.getId());
-	}
-	
-	public PerformActionThread(Agent performer, UseableObject usedObject, Action performedAction, int requiredMinLength) {
-		this.performer = performer;
-		this.usedObject = usedObject;
-		this.performedAction = performedAction;
-		this.requiredMinLength = requiredMinLength;
-		this.setName(performedAction.getName() + " thread " + this.getId());
-	}*/
-
+	/* (non-Javadoc)
+	 * @see java.lang.Thread#run()
+	 */
 	public void run() {
 		
 		ObjectAction performedAction = performer.getActionQueue().peek();
@@ -71,13 +66,10 @@ public class PerformActionThread extends Thread {
 			wait.start();
 		}
 		
-		/* Wait for all threads to finish */
 		for (Thread thisThread : threads) {
 			try {
 				thisThread.join();
 			} catch (InterruptedException e) {
-				// To interrupt an action, an interrupt will have to be invoked on every
-				// single thread in the thread list - use interruptThreads() provided
 				log.debug("Thread interrupted: " + thisThread.getName());
 				performedAction.getObject().setBeingUsed(false);
 				performer.setCurrentAction(null);
@@ -94,11 +86,19 @@ public class PerformActionThread extends Thread {
 		performer.setCurrentAction(null);
 	}
 
+	/**
+	 * Accessor for the List of threads associated with the currently performed Action.
+	 * @return a list of threads associated with the currently performed Action
+	 */
 	public List<Thread> getThreads() {
 		return threads;
 	}
 	
-	public synchronized void interruptThreads() {
+	/**
+	 * Interrupt all threads associated with the currently performed action,
+	 * then interrupt this thread. Essentially cancels current action.
+	 */
+	public void interruptThreads() {
 		log.debug(this.getName() + "'s threads are interrupting...");
 		try {
 			for (Thread thisThread : threads) {
@@ -106,10 +106,8 @@ public class PerformActionThread extends Thread {
 			}
 		}
 		catch (ConcurrentModificationException e) {
-			//TODO: Graceful way of handling this.
+			//TODO: Find a way to handle/fix ConcurrentModificationExceptions.
 			log.error("Concurrent modification when interrupting threads.");
 		}
-
 	}
-
 }

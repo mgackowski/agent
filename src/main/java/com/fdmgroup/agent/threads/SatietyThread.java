@@ -5,33 +5,60 @@ import org.apache.logging.log4j.Logger;
 
 import com.fdmgroup.agent.agents.Agent;
 
+/**
+ * Satiety is a temporary state during which a need is not deteriorating.
+ * It is intended to prevent Needs from dropping while they're being refilled, and can
+ * simulate a period of "immunity", e.g. an Agent will not get hungry for a while after a tasty meal.
+ * @author Mikolaj.Gackowski
+ *
+ */
 public class SatietyThread extends Thread {
 	
 	static Logger log = LogManager.getLogger();
 	Agent satedAgent;
 	String needName;
 	long millis;
-	Thread pairedActionThread = null;	// This can be a PerformAction or ChangeNeed thread, different behaviours
+	Thread pairedActionThread = null;
 	
+	/**
+	 * @param satedAgent the Agent to assign a satiety state to
+	 * @param needName the need which needs to stop deteriorating
+	 * @param millis the extra amount of time during which satiety persists after a need is satisfied
+	 */
 	public SatietyThread(Agent satedAgent, String needName, long millis) {
 		this.satedAgent = satedAgent;
 		this.needName = needName;
 		this.millis = millis;
 	}
 	
+	/**
+	 * @param satedAgent satedAgent the Agent to assign a satiety state to
+	 * @param needName needName the need which needs to stop deteriorating
+	 */
 	public SatietyThread(Agent satedAgent, String needName) {
 		this.satedAgent = satedAgent;
 		this.needName = needName;
-		this.millis = 5000;
+		this.millis = 0;
 	}
 	
+	/**
+	 * @param satedAgent satedAgent the Agent to assign a satiety state to
+	 * @param needName needName the need which needs to stop deteriorating
+	 * @param finishTogether the Thread which dictates how long satiety should last
+	 */
 	public SatietyThread(Agent satedAgent, String needName, Thread finishTogether) {
 		this.satedAgent = satedAgent;
 		this.needName = needName;
 		this.millis = 0;
-		this.pairedActionThread = finishTogether; //pair it with the perform action thread
+		this.pairedActionThread = finishTogether;
 	}
 	
+	/**
+	 * @param satedAgent satedAgent the Agent to assign a satiety state to
+	 * @param needName needName the need which needs to stop deteriorating
+	 * @param finishTogether the Thread which dictates how long satiety should last
+	 * @param millis the extra amount of time during which satiety persists after a need is satisfied
+	 */
 	public SatietyThread(Agent satedAgent, String needName, Thread finishTogether, long millis) {
 		this.satedAgent = satedAgent;
 		this.needName = needName;
@@ -39,10 +66,8 @@ public class SatietyThread extends Thread {
 		this.pairedActionThread = finishTogether;
 	}
 	
-	/* Run for the duration of the pairedActionThread (typically a PerformActionThread), if specified.
-	 * Then, wait for a number of milliseconds, if specified.
-	 * This prevents the needs from dropping while they're being satisfied, and using millis
-	 * can extend this "invincibility" period to simulate satiety.
+	/* (non-Javadoc)
+	 * @see java.lang.Thread#run()
 	 */
 	public void run() {
 		float originalDeteriorationRate = satedAgent.getIndivValues().getDownRate(needName);

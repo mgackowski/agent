@@ -29,6 +29,9 @@ public class Demo implements AgentSim {
 	private AgentPool agents = new AgentPool();
 	private ObjectPool objects = new ObjectPool();
 
+	/* (non-Javadoc)
+	 * @see com.fdmgroup.agent.AgentSim#prepareObjects()
+	 */
 	public boolean prepareObjects() {
 		boolean success = true;
 
@@ -42,6 +45,9 @@ public class Demo implements AgentSim {
         return success;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.fdmgroup.agent.AgentSim#prepareAgents()
+	 */
 	public boolean prepareAgents() {
 		
 		boolean success = true;
@@ -52,6 +58,9 @@ public class Demo implements AgentSim {
 		return success;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.fdmgroup.agent.AgentSim#startSim()
+	 */
 	public boolean startSim() {
 
         for(Agent thisAgent : agents.getAgents()) {
@@ -70,6 +79,9 @@ public class Demo implements AgentSim {
         return true;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.fdmgroup.agent.AgentSim#prepareAndStartSim()
+	 */
 	public boolean prepareAndStartSim() {
 		
 		boolean success = true;
@@ -81,10 +93,16 @@ public class Demo implements AgentSim {
 		return success;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.fdmgroup.agent.AgentSim#getAgentPool()
+	 */
 	public AgentPool getAgentPool() {
 		return agents;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.fdmgroup.agent.AgentSim#getObjectPool()
+	 */
 	public ObjectPool getObjectPool() {
 		return objects;
 	}

@@ -5,6 +5,11 @@ import org.apache.logging.log4j.Logger;
 
 import com.fdmgroup.agent.agents.Agent;
 
+/**
+ * A thread which changes a single need by a given amount, then terminates.
+ * @author Mikolaj.Gackowski
+ *
+ */
 public class ChangeNeedThread extends Thread {
 	
 	static Logger log = LogManager.getLogger();
@@ -13,6 +18,11 @@ public class ChangeNeedThread extends Thread {
 	float needChangeValue;
 	String needName;
 	
+	/**
+	 * @param targetAgent The agent possessing the need to change
+	 * @param needName The name of the need to change
+	 * @param needChangeValue The value by which to change the need
+	 */
 	public ChangeNeedThread(Agent targetAgent, String needName, float needChangeValue) {
 		this.needChangeValue = needChangeValue;
 		this.targetAgent = targetAgent;
@@ -20,6 +30,9 @@ public class ChangeNeedThread extends Thread {
 		this.setName(needName + " +" + needChangeValue);
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Thread#run()
+	 */
 	public void run() {
 		log.debug("Started changing " + needName + " of " + targetAgent.getName() + " by " + needChangeValue);
 		
