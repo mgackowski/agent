@@ -3,6 +3,7 @@ package com.fdmgroup.agent.objects;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fdmgroup.agent.actions.ActFlush;
 import com.fdmgroup.agent.actions.ActNumberOne;
 import com.fdmgroup.agent.actions.ActNumberTwo;
 import com.fdmgroup.agent.actions.Action;
@@ -14,8 +15,9 @@ public class ObjToilet implements UseableObject {
 	boolean beingUsed = false;
 	
 	public ObjToilet() {
-		allActions.add(new ActNumberOne(this));
-		allActions.add(new ActNumberTwo(this));
+		allActions.add(new ActNumberOne());
+		allActions.add(new ActNumberTwo());
+		allActions.add(new ActFlush());
 	}
 	
 	public List<Action> advertiseActions() {

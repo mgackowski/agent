@@ -1,5 +1,11 @@
 package com.fdmgroup.agent.agents;
 
+/**
+ * An implementation of Individuality containing deterioration rates for five basic needs:
+ * "FOOD", "HYGIENE", "BLADDER", "FUN" and "ENERGY".
+ * @author Mikolaj.Gackowski
+ *
+ */
 public class FiveIndividuality extends Individuality {
 
 	public FiveIndividuality() {

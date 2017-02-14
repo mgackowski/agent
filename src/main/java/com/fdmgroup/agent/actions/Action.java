@@ -1,51 +1,47 @@
 package com.fdmgroup.agent.actions;
 
-import com.fdmgroup.agent.agents.Agent;
-import com.fdmgroup.agent.objects.UseableObject;
-import com.fdmgroup.agent.threads.PerformActionThread;
+import java.util.Map;
 
 /**
- * Actions are performed by Agents. They should be as atomic as possible.
- * @author Mikolaj Gackowski
+ * Actions are performed when they appear attractive to an Agent. They contain
+ * Promises which affect whether they will be added to an Agent's action queue.
+ * They also contain Consequences which describe how an Agent's state will
+ * change after the Action is performed.
+ * 
+ * @author Mikolaj.Gackowski
  *
  */
 public interface Action {
-	
-	/*
-	 * Retrieves a Promise object - a description of needs the action promises to satisfy.
+
+	/**
+	 * Retrieves a Promise object - a description of needs the action promises
+	 * to satisfy.
 	 */
 	public Promise getPromises();
-	
-	/*
-	 * Retrieves a Consequence object - a description of needs the action actually
-	 * will satisfy, along with the next action (if any) to form a chain.
+
+	/**
+	 * Retrieves a Map which assigns Strings of need names to Consequence objects.
+	 * Consequence objects describe how a need will change when an action is performed.
 	 */
-	public Consequence getConsequences();
-	
-	/*
+	public Map<String, Consequence> getConsequences();
+
+	/**
+	 * Retrieves a Consequence object for the given need.
+	 * Consequence objects describe how a need will change when an action is performed.
+	 * 
+	 * @param The name of the need. The suggested format is ALLCAPS e.g. "HUNGER".
+	 * @return A consequence object, or null if there is no consequence for the given need
+	 */
+	public Consequence getConsequence(String needName);
+
+	/**
 	 * Retrieves the name of the action, e.g. "eat snack", "take nap".
 	 */
 	public String getName();
-	
-	/*
-	 * This should start a PerformActionThread, which uses the information stored
-	 * in this class and affect the agent over time (in other words, perform this action).
-	 * TODO: Preferably, PerformActionThread should be abstract
+
+	/**
+	 * Retrieves the next action that is to be performed after finishing this one.
 	 */
-	public PerformActionThread execute(Agent performer, UseableObject usedObject);
-	
-	/*
-	 * Retrieves the object this action is performed with. This is necessary because
-	 * Agents interact with Actions directly and do not store information about Objects.
-	 * TODO: Consider this in a major refactor, if execute() could be moved to Objects.
-	 */
-	public UseableObject getTiedObject();
-	
-	/*
-	 * Satiety is the length of time in milliseconds for which the Agent's needs will stop
-	 * deteriorating. Recommended to set this equal or greater than the minimum required
-	 * length of the action in execute().
-	 */
-	public int getSatietyLength();
+	public Action getNextAction();
 
 }

@@ -3,8 +3,8 @@ package com.fdmgroup.agent.objects;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fdmgroup.agent.actions.ActRead;
 import com.fdmgroup.agent.actions.Action;
+import com.fdmgroup.agent.actions.ActRead;
 
 public class ObjBook implements UseableObject {
 	
@@ -13,7 +13,7 @@ public class ObjBook implements UseableObject {
 	boolean beingUsed = false;
 	
 	public ObjBook() {
-		allActions.add(new ActRead(this));
+		allActions.add(new ActRead());
 	}
 	
 	public List<Action> advertiseActions() {
