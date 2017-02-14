@@ -62,7 +62,7 @@ public class PerformActionThread extends Thread {
 			Thread changeNeed = new ChangeNeedThread(performer, needName, performedAction.getAction().getConsequence(needName).getChange());
 			threads.add(changeNeed);
 			changeNeed.start();
-			new SatietyThread(performer, needName, changeNeed, performedAction.getAction().getConsequence(needName).getSatietyLength()).start();
+			new SatietyThread(performer, needName, changeNeed, performedAction.getAction().getConsequence(needName).getExtraSatietyLength()).start();
 		}
 		
 		if (requiredMinLength > 0){

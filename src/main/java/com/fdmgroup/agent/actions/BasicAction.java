@@ -3,8 +3,11 @@ package com.fdmgroup.agent.actions;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fdmgroup.agent.objects.ObjectAction;
-
+/**
+ * A basic implementation of Action. Can (and should) be extended to create actions.
+ * @author Mikolaj.Gackowski
+ *
+ */
 public class BasicAction implements Action{
 
 	protected String name = "";

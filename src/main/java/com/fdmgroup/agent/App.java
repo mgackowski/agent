@@ -4,6 +4,9 @@ import com.fdmgroup.agent.swing.SwingDisplay;
 
 public class App 
 {
+    /**
+     * Needs-based Agent simulation. See http://github.com/mgackowski/agent
+     */
     public static void main( String[] args )
     {
 
@@ -11,7 +14,6 @@ public class App
       demo.prepareAndStartSim();
       //demo.startPrintThread();
       
-      //TODO: consider moving this to Demo
       SwingDisplay display = new SwingDisplay(demo);
       display.createGui();
       display.startGui();

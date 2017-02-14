@@ -16,6 +16,12 @@ import com.fdmgroup.agent.objects.ObjectPool;
 import com.fdmgroup.agent.threads.DecisionThread;
 import com.fdmgroup.agent.threads.DeteriorationThread;
 
+/**
+ * An implementation of AgentSim which prepares a set of sample Objects and Agents, modelled
+ * after humans in a home environment.
+ * @author Mikolaj.Gackowski
+ *
+ */
 public class Demo implements AgentSim {
 	
 	static Logger log = LogManager.getLogger();
