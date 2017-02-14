@@ -1,5 +1,10 @@
 package com.fdmgroup.agent.agents;
 
+/**
+ * An implementation of Individuality containing deterioration rates for two basic needs, "FOOD" and "ENERGY".
+ * @author Mikolaj.Gackowski
+ *
+ */
 public class BasicIndividuality extends Individuality {
 
 	public BasicIndividuality() {

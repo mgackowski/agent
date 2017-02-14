@@ -3,6 +3,12 @@ package com.fdmgroup.agent.agents;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A basic implementation of Needs, representing five needs -
+ * "FOOD", "HYGIENE", "BLADDER", "FUN" and "ENERGY".
+ * @author Mikolaj.Gackowski
+ *
+ */
 public class FiveNeeds implements Needs {
 	
 	private Map<String,Float> needs = new HashMap<String,Float>();

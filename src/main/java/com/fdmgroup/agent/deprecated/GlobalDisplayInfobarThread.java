@@ -7,7 +7,7 @@ import com.fdmgroup.agent.objects.UseableObject;
 /**
  * Written for the purpose of providing a visual, real-time representation
  * of Agents' needs in the Oracle Eclipse console.
- * @author Mikolaj Gackowski
+ * @author Mikolaj.Gackowski
  *
  */
 @Deprecated

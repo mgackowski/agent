@@ -8,7 +8,7 @@ import java.util.Map;
  * @author Mikolaj.Gackowski
  *
  */
-public class BasicAction implements Action{
+public abstract class BasicAction implements Action{
 
 	protected String name = "";
 	protected Promise advertisedPromise = new Promise();
