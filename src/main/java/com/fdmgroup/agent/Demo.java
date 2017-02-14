@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 
 import com.fdmgroup.agent.agents.Agent;
 import com.fdmgroup.agent.agents.AgentPool;
-import com.fdmgroup.agent.agents.BasicIndividuality;
 import com.fdmgroup.agent.agents.FiveIndividuality;
 import com.fdmgroup.agent.objects.ObjBook;
 import com.fdmgroup.agent.objects.ObjFridge;
@@ -25,29 +24,30 @@ public class Demo implements AgentSim {
 	private ObjectPool objects = new ObjectPool();
 
 	public boolean prepareObjects() {
-		//TODO: Return false if unsuccessful
+		boolean success = true;
 
-        objects.addObject(new ObjFridge());
-        objects.addObject(new ObjSingleBed());
-        objects.addObject(new ObjToilet());
-        objects.addObject(new ObjShower());
-        objects.addObject(new ObjSink());
-        objects.addObject(new ObjBook());
+        success = objects.addObject(new ObjFridge()) && success;
+        success = objects.addObject(new ObjSingleBed()) && success;
+        success = objects.addObject(new ObjToilet()) && success;
+        success = objects.addObject(new ObjShower()) && success;
+        success = objects.addObject(new ObjSink()) && success;
+        success = objects.addObject(new ObjBook()) && success;
         
-        return true;
+        return success;
 	}
 
 	public boolean prepareAgents() {
-		//TODO: Return false if unsuccessful
-        agents.addAgent(new Agent("Bob", new FiveIndividuality(1.2f,0.6f,1.2f,0.2f,0.12f)));
-        agents.addAgent(new Agent("Alice", new FiveIndividuality(1f,0.5f,1f,0.2f,0.1f)));
+		
+		boolean success = true;
+		
+		success = agents.addAgent(new Agent("Bob", new FiveIndividuality(1.2f,0.6f,1.2f,0.2f,0.12f))) && success;
+		success = agents.addAgent(new Agent("Alice", new FiveIndividuality(1f,0.5f,1f,0.2f,0.1f))) && success;
         
-		return true;
+		return success;
 	}
 
 	public boolean startSim() {
-		//TODO: Return true/false
-		boolean success = false;
+
         for(Agent thisAgent : agents.getAgents()) {
         	Thread deteriorate = new DeteriorationThread(thisAgent);
         	deteriorate.start();
@@ -56,20 +56,23 @@ public class Demo implements AgentSim {
         	try {
 				Thread.sleep(100); // prevent from accessing objects in the same instant
 			} catch (InterruptedException e) {
-				log.info("startSim() was interrupted.");
+				log.error("startSim() was interrupted.");
 				e.printStackTrace();
+				return false;
 			}
         }
-        return success;
+        return true;
 	}
 
-	public boolean run() {
-		//TODO: Return false if unsuccessful
+	public boolean prepareAndStartSim() {
 		
-		prepareObjects();
-		prepareAgents();
-		startSim();
-		return true;
+		boolean success = true;
+		
+		success = prepareObjects() && success;
+		success = prepareAgents() && success;
+		success = startSim() && success;
+		
+		return success;
 	}
 
 	public AgentPool getAgentPool() {

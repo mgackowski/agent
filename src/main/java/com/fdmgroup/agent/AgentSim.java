@@ -8,7 +8,7 @@ public interface AgentSim {
 	public boolean prepareObjects();
 	public boolean prepareAgents();
 	public boolean startSim();
-	public boolean run();
+	public boolean prepareAndStartSim();
 	public AgentPool getAgentPool();
 	public ObjectPool getObjectPool();
 	

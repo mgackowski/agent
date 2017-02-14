@@ -8,7 +8,7 @@ public class App
     {
 
       AgentSim demo = new Demo();
-      demo.run();
+      demo.prepareAndStartSim();
       //demo.startPrintThread();
       
       //TODO: consider moving this to Demo
