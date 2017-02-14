@@ -9,6 +9,10 @@ import javax.swing.border.LineBorder;
 
 import com.fdmgroup.agent.agents.Agent;
 
+/**
+ * An implementation-specific Swing text box to represent the current action of an Agent.
+ * @author Mikolaj.Gackowski
+ */
 public class JActionTextArea extends JTextArea {
 	
 	private static final long serialVersionUID = 6752378669971107428L;

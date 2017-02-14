@@ -31,15 +31,17 @@ public class SwingDisplay {
 		this.simulation = simulationToPresent;
 	}
 	
-	//TODO: Updateable components can be abstracted and stored in single list
+	//TODO: Abstract components which can be updated, then call update on each
 	private static List<JNeedBar> needBars = new ArrayList<JNeedBar>();
 	private static List<JActionTextArea> actionStatuses = new ArrayList<JActionTextArea>();
 	
+	/**
+	 * Create the GUI. This will not update by itself - call startGui() afterwards.
+	 */
 	public void createGui() {
 		frame.setSize(500,350);
 		frame.setLayout(new FlowLayout());
 		
-		/* Draw a panel for every Agent */
 		for (Agent thisAgent : simulation.getAgentPool().getAgents()) {
 			
 			JPanel thisPanel = new JPanel();
@@ -62,13 +64,15 @@ public class SwingDisplay {
 		frame.setVisible(true);
 	}
 	
+	/**
+	 * Start a thread which will keep updating the GUI.
+	 */
 	public void startGui() {
 		new SwingRepaintThread(this).start();
 	}
 	
 	private static void generateNeedBars(Agent thisAgent, JPanel panel) {
 		
-		/* Draw a label and bar for every need */
 		for (String needName : thisAgent.getNeeds().getNeeds().keySet()) {
 			
 			panel.add(new JLabel(needName));

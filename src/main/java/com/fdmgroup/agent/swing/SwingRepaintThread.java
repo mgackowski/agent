@@ -20,7 +20,6 @@ public class SwingRepaintThread extends Thread {
 	public void run() {
 		log.debug("Swing repaint thread started.");
 		while(true) {
-			//TODO: Updateable components can be abstracted and stored in single list
 			for (JNeedBar thisBar : display.getNeedBars()) {
 				thisBar.update();
 			}
