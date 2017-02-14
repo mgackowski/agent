@@ -14,8 +14,8 @@ public class ObjFridge implements UseableObject {
 	boolean beingUsed = false;
 	
 	public ObjFridge() {
-		allActions.add(new ActEatSnack(this));
-		allActions.add(new ActEatMeal(this));
+		allActions.add(new ActEatSnack());
+		allActions.add(new ActEatMeal());
 	}
 	
 	public List<Action> advertiseActions() {

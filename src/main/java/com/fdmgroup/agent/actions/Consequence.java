@@ -1,69 +1,61 @@
 package com.fdmgroup.agent.actions;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * This class provides a description of how an action will affect the needs of the agent.
- * Complex actions are broken down; getNextAction can provide the next link in the chain.
+ * Consequence objects describe how a need will change when an action is performed.
  * The class can and should be extended for more advanced object/action implementations.
- * @author Mikolaj Gackowski
+ * @author Mikolaj.Gackowski
  *
  */
 public class Consequence {
 	
 	static Logger log = LogManager.getLogger();
 	
-	private Map<String,Float> change = new HashMap<String,Float>();
-	private Action nextAction = null;
+	private String need;
+	private float change;
+	private long extraSatietyLength;
 	
-	public Consequence() {}
-	
-	public Consequence(Map<String, Float> change) {
+	public Consequence(String need, float change) {
+		this.need = need;
 		this.change = change;
-	}
-	
-	public Consequence(Action nextAction) {
-		this.nextAction = nextAction;
+		this.extraSatietyLength = 0;
 	}
 
-	public Consequence(Map<String, Float> change, Action nextAction) {
-		super();
+	/**
+	 * This constructor allows to set a custom extra satiety length in milliseconds.
+	 * Satiety is a state during which a need level does not decrease. By default, it lasts while
+	 * a need is being satisfied. Extra satiety length can be specified in addition to that time.
+	 * TODO: Change this when timer becomes independent from seconds.
+	 */
+	public Consequence(String need, float change, long extraSatietyLength) {
+		this.need = need;
 		this.change = change;
-		this.nextAction = nextAction;
+		this.extraSatietyLength = extraSatietyLength;
 	}
 
-	public float getNeedChange(String needName){
-		if (change.containsKey(needName)) {
-			return change.get(needName);
-		}
-		else {
-			return 0f;	//important to default to zero: decision thread depends on it
-		}
+	/**
+	 * @return the name of the need this consequence will affect
+	 */
+	public String getNeed() {
+		return need;
 	}
 
-	public boolean setNeedChange(String needName, float newValue){
-		if (change.containsKey(needName)) {
-			change.put(needName, newValue);
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-
-	public Map<String, Float> getAllChanges() {
+	/**
+	 * @return the amount of points that will be added/subtracted from the current need level
+	 */
+	public float getChange() {
 		return change;
 	}
-	
-	public Action getNextAction() {
-		return nextAction;
+
+	/**
+	 * Satiety is a state during which a need level does not decrease. By default, it lasts while
+	 * a need is being satisfied. Extra satiety length can be specified in addition to that time.
+	 * @return extra satiety length in milliseconds.
+	 */
+	public long getExtraSatietyLength() {
+		return extraSatietyLength;
 	}
 
-	public void setNextAction(Action nextAction) {
-		this.nextAction = nextAction;
-	}
 }

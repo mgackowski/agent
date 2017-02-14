@@ -4,6 +4,10 @@ import java.awt.Color;
 import javax.swing.JProgressBar;
 import com.fdmgroup.agent.agents.Agent;
 
+/**
+ * An implementation-specific Swing progress bar to represent the need level of an Agent.
+ * @author Mikolaj.Gackowski
+ */
 public class JNeedBar extends JProgressBar {
 	
 	private static final long serialVersionUID = 6752378669971107428L;
