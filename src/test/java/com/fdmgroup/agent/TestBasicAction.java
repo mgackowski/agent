@@ -19,7 +19,6 @@ public class TestBasicAction {
 				name = "test action";
 				consequences.put("TEST_NEED", new Consequence("TEST_NEED", 50f));
 			}
-			
 		}
 		testAction = new TestAction();
 		testAction.setNextAction(new TestAction());

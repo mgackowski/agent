@@ -39,7 +39,12 @@ public class ObjectAction {
 	 */
 	@Override
 	public String toString() {
-		return "ObjectAction [" + object.getName() + " : " + action.getName() + "]";
+		if (object != null && action != null) {
+			return "ObjectAction [" + object.getName() + " : " + action.getName() + "]";
+		}
+		else {
+			return "ObjectAction [null object or action]";
+		}
 	}
 	
 	

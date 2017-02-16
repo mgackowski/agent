@@ -143,8 +143,8 @@ public class Agent {
 	 */
 	public void setCurrentAction(ObjectAction currentAction) {
 		this.currentAction = currentAction;
-		if (currentAction != null) {
-			log.debug("Current action set to: " + currentAction.getAction().getName() + " using " + currentAction.getObject().getName());
+		if(currentAction != null) {
+			log.debug("Current action set to: " + currentAction.toString());
 		}
 		else {
 			log.debug("Current action set to null");
