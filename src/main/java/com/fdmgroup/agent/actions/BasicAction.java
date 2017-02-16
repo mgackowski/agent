@@ -13,7 +13,7 @@ public abstract class BasicAction implements Action{
 	protected String name = "";
 	protected Promise advertisedPromise = new Promise();
 	protected Map<String, Consequence> consequences = new HashMap<String, Consequence>();
-	protected Action nextAction = null;
+	private Action nextAction = null;
 
 	/* (non-Javadoc)
 	 * @see com.fdmgroup.agent.actions.Action#getName()
@@ -48,6 +48,22 @@ public abstract class BasicAction implements Action{
 	 */
 	public Action getNextAction() {
 		return nextAction;
+	}
+
+
+	/**
+	 * @param nextAction the next action that is to be performed after finishing this one. Can't point to itself.
+	 * @return true if successful, false if set to point to itself - then, nextAction is reset to null
+	 */
+	public boolean setNextAction(Action nextAction) {
+		if(nextAction.getClass().equals(this.getClass())) {
+			this.nextAction = null;
+			return false;
+		}
+		else {
+			this.nextAction = nextAction;
+			return true;
+		}
 	}
 
 }
