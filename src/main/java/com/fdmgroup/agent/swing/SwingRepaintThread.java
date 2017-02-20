@@ -30,7 +30,7 @@ public class SwingRepaintThread extends Thread {
 			display.getFrame().revalidate();
 			
 			try {
-				Thread.sleep(100);
+				Thread.sleep(16);
 			} catch (InterruptedException e) {
 				log.error("Swing repaint thread interrupted.");
 				e.printStackTrace();

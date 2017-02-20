@@ -29,7 +29,7 @@ public class WaitThread extends Thread {
 	 */
 	public void run() {
 		try {
-			Thread.sleep(millis);
+			Thread.sleep(millis);	//TODO: speed
 		} catch (InterruptedException e) {
 			log.debug("Wait thread has been interrupted.");
 			return;

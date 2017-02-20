@@ -61,7 +61,7 @@ public class PerformActionThread extends Thread {
 		}
 		
 		if (requiredMinLength > 0){
-			Thread wait = new WaitThread(requiredMinLength);
+			Thread wait = new WaitThread(requiredMinLength);	//TODO: Speed
 			threads.add(wait);
 			wait.start();
 		}

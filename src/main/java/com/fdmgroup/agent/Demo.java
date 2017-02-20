@@ -69,7 +69,7 @@ public class Demo implements AgentSim {
         	Thread decide = new DecisionThread(thisAgent, objects.getObjects());
         	decide.start();
         	try {
-				Thread.sleep(100); // prevent from accessing objects in the same instant
+				Thread.sleep(100); // TODO: speed
 			} catch (InterruptedException e) {
 				log.error("startSim() was interrupted.");
 				e.printStackTrace();
