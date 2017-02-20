@@ -18,7 +18,7 @@ public class WaitThread extends Thread {
 	 * Create a new Wait Thread which lasts the specified number of milliseconds.
 	 * @param millis lifetime of this thread in milliseconds
 	 */
-	WaitThread(long millis) {
+	public WaitThread(long millis) {
 		this.millis = millis;
 		this.setName("wait " + millis + "s thread");
 		this.setName("Wait thread");

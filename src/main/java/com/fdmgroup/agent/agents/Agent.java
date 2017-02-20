@@ -26,8 +26,7 @@ public class Agent {
 	private boolean alive;
 	
 	private BasicIndividuality indivValues;
-	
-	private Needs needs = new FiveNeeds();
+	private Needs needs;
 	
 	private ObjectAction currentAction;
 	private Queue<ObjectAction> actionQueue = new ConcurrentLinkedQueue<ObjectAction>();
@@ -41,6 +40,7 @@ public class Agent {
 		this.name = name;
 		alive = true;
 		indivValues = new FiveIndividuality(1f, 0.5f, 1f, 0.2f, 0.1f);
+		needs = new FiveNeeds();
 		log.info("New Agent created with name " + this.name);
 	}
 	
@@ -54,6 +54,21 @@ public class Agent {
 		this.name = name;
 		alive = true;
 		this.indivValues = indivValues;
+		needs = new FiveNeeds();
+		log.info("New Agent created with name " + this.name);
+	}
+	
+	/**
+	 * Create an Agent with custom needs and individual values (such as need deterioration speed).
+	 * @param name - the name of the new Agent
+	 * @param indivValues - Individuality object containing individual values
+	 * @param needs - Needs implementation containing the Agent's needs 
+	 */
+	public Agent(String name, BasicIndividuality indivValues, Needs needs) {
+		this.name = name;
+		alive = true;
+		this.indivValues = indivValues;
+		this.needs = needs;
 		log.info("New Agent created with name " + this.name);
 	}
 	

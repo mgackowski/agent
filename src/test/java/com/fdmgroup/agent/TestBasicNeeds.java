@@ -39,6 +39,12 @@ public class TestBasicNeeds {
 	}
 	
 	@Test
+	public void TestBasicNeeds_SetNeed_NeedValueUpdated() {
+		testBasicNeeds.setNeed("NEED_1", 80f);
+		assertTrue(testBasicNeeds.getNeed("NEED_1") == 80f);
+	}
+	
+	@Test
 	public void TestBasicNeeds_SetNeed_ReturnFalseWhenNoMapping() {
 		assertFalse(testBasicNeeds.setNeed("NEED_3", 20f));
 	}
