@@ -42,13 +42,17 @@ public abstract class BasicNeeds implements Needs {
 	 * @see com.fdmgroup.agent.agents.Needs#changeNeed(java.lang.String, float)
 	 */
 	public float changeNeed(String needName, float delta) {
-		if (needs.containsKey(needName)) {
-			needs.put(needName, needs.get(needName) + delta);
-			return needs.get(needName);
-		}
-		else {
+		if (!needs.containsKey(needName)) {
 			return -1f;
 		}
+		float newValue = needs.get(needName) + delta;
+		if (newValue >= 0f) {
+			needs.put(needName, newValue);
+		}
+		else {
+			needs.put(needName, 0f);
+		}
+		return needs.get(needName);
 	}
 	
 	/* (non-Javadoc)

@@ -25,7 +25,7 @@ public class Agent {
 	private String name;
 	private boolean alive;
 	
-	private Individuality indivValues;
+	private BasicIndividuality indivValues;
 	
 	private Needs needs = new FiveNeeds();
 	
@@ -50,7 +50,7 @@ public class Agent {
 	 * @param name - the name of the new Agent
 	 * @param indivValues - Individuality object containing individual values
 	 */
-	public Agent(String name, Individuality indivValues) {
+	public Agent(String name, BasicIndividuality indivValues) {
 		this.name = name;
 		alive = true;
 		this.indivValues = indivValues;
@@ -99,14 +99,14 @@ public class Agent {
 	/**
 	 * @return an Individuality object which describes the individual modifiers for need changes
 	 */
-	public Individuality getIndivValues() {
+	public BasicIndividuality getIndivValues() {
 		return indivValues;
 	}
 
 	/**
 	 * @param indivValues an Individuality object which describes the individual modifiers for need changes
 	 */
-	public void setIndivValues(Individuality indivValues) {
+	public void setIndivValues(BasicIndividuality indivValues) {
 		this.indivValues = indivValues;
 	}
 

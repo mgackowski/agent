@@ -6,7 +6,7 @@ package com.fdmgroup.agent.agents;
  * @author Mikolaj.Gackowski
  *
  */
-public class FiveIndividuality extends Individuality {
+public class FiveIndividuality extends BasicIndividuality {
 
 	public FiveIndividuality() {
 		super.getDownRate().put("FOOD", 1f);
@@ -16,6 +16,9 @@ public class FiveIndividuality extends Individuality {
 		super.getDownRate().put("ENERGY", 0.1f);
 	}
 	
+	/**
+	 * Provide deterioration speed modifiers for FOOD, HYGIENE, BLADDER, FUN, ENERGY.
+	 */
 	public FiveIndividuality(float foodDeteriorationRate, float hygieneDeteriorationRate, float bladderDeteriorationRate, float funDeteriorationRate, float energyDeteriorationRate) {
 		super.getDownRate().put("FOOD", foodDeteriorationRate);
 		super.getDownRate().put("HYGIENE", hygieneDeteriorationRate);
