@@ -32,6 +32,7 @@ public class DecisionThread extends Thread {
 	
 	Agent thisAgent;
 	List<UseableObject> availableObjects;
+	long stepMillis = 100;
 	
 	/**
 	 * @param thisAgent the Agent on behalf of whom decisions are made
@@ -77,7 +78,7 @@ public class DecisionThread extends Thread {
 			
 			try {
 				log.info(thisAgent.getName() + " initiates a new thread to perform an action.");
-				PerformActionThread perform = new PerformActionThread(thisAgent, 1000); //TODO: Speed
+				PerformActionThread perform = new PerformActionThread(thisAgent, 10 * stepMillis); //TODO: Speed
 				perform.start();
 				Thread interruptor = new CriticalInterruptorThread(perform);
 				interruptor.start();

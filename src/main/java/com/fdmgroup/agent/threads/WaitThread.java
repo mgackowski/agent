@@ -28,11 +28,13 @@ public class WaitThread extends Thread {
 	 * @see java.lang.Thread#run()
 	 */
 	public void run() {
+		log.debug("Started Wait thread of length " + millis + " ms");
 		try {
 			Thread.sleep(millis);	//TODO: speed
 		} catch (InterruptedException e) {
 			log.debug("Wait thread has been interrupted.");
 			return;
 		}
+		log.debug("Finished Wait thread of length " + millis + " ms");
 	}
 }

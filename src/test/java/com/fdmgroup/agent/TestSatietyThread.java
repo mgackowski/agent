@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import java.util.Date;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,6 +19,8 @@ public class TestSatietyThread {
 	
 	Agent testAgent;
 	Thread pairedThread;
+	
+	static Logger log = LogManager.getLogger();
 	
 	@Before
 	public void setUpSatietyThread() {
@@ -69,7 +73,9 @@ public class TestSatietyThread {
 		Date start = new Date();
 		thread.run();
 		Date finish = new Date();
-		assertTrue(finish.getTime() - start.getTime() >= 1000);
+		long duration = finish.getTime() - start.getTime();
+		log.debug("TestSatietyThread_Run_MillisDurationNotTooShort(): duration == " + duration);
+		assertTrue(duration >= 1000);
 	}
 	
 	@Test
@@ -88,7 +94,9 @@ public class TestSatietyThread {
 		pairedThread.run();
 		thread.run();
 		Date finish = new Date();
-		assertTrue(finish.getTime() - start.getTime() >= 1000);
+		long duration = finish.getTime() - start.getTime();
+		log.debug("TestSatietyThread_Run_PairedDurationNotTooShort(): duration == " + duration);
+		assertTrue(duration >= 1000);
 	}
 	
 	@Test
@@ -108,7 +116,9 @@ public class TestSatietyThread {
 		pairedThread.run();
 		thread.run();
 		Date finish = new Date();
-		assertTrue(finish.getTime() - start.getTime() >= 1500);
+		long duration = finish.getTime() - start.getTime();
+		log.debug("TestSatietyThread_Run_PairedAndMillisDurationNotTooShort(): duration == " + duration);
+		assertTrue(duration >= 1500);
 	}
 	
 	@Test

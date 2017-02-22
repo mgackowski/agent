@@ -28,6 +28,7 @@ public class Demo implements AgentSim {
 	
 	private AgentPool agents = new AgentPool();
 	private ObjectPool objects = new ObjectPool();
+	long stepMillis = 100;
 
 	/* (non-Javadoc)
 	 * @see com.fdmgroup.agent.AgentSim#prepareObjects()
@@ -69,7 +70,7 @@ public class Demo implements AgentSim {
         	Thread decide = new DecisionThread(thisAgent, objects.getObjects());
         	decide.start();
         	try {
-				Thread.sleep(100); // TODO: speed
+				Thread.sleep(stepMillis); // TODO: speed
 			} catch (InterruptedException e) {
 				log.error("startSim() was interrupted.");
 				e.printStackTrace();

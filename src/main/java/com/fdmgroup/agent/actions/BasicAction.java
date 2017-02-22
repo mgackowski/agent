@@ -13,7 +13,7 @@ public abstract class BasicAction implements Action{
 	protected String name = "";
 	protected Promise advertisedPromise = new Promise();
 	protected Map<String, Consequence> consequences = new HashMap<String, Consequence>();
-	private Action nextAction = null;
+	protected Action nextAction = null;
 
 	/* (non-Javadoc)
 	 * @see com.fdmgroup.agent.actions.Action#getName()

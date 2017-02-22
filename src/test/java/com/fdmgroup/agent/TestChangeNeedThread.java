@@ -5,6 +5,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,6 +18,8 @@ import com.fdmgroup.agent.threads.ChangeNeedThread;
 public class TestChangeNeedThread {
 	
 	Agent testAgent;
+	
+	static Logger log = LogManager.getLogger();
 	
 	@Before
 	public void setUpChangeNeedThread() {
@@ -70,7 +74,9 @@ public class TestChangeNeedThread {
 		Date start = new Date();
 		thread.run();
 		Date finish = new Date();
-		assertTrue(finish.getTime() - start.getTime() >= 1000);
+		long duration = finish.getTime() - start.getTime();
+		log.debug("TestChangeNeedThread_Run_NeedIncrementsOverTime(): duration == " + duration);
+		assertTrue(duration >= 1000);
 	}
 	
 	@Test
@@ -109,8 +115,15 @@ public class TestChangeNeedThread {
 		testAgent.getNeeds().setNeed("FOOD", 5f);
 		Date start = new Date();
 		thread.run();
+		try {
+			thread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		Date finish = new Date();
-		assertTrue(finish.getTime() - start.getTime() >= 3000);
+		long duration = finish.getTime() - start.getTime();
+		log.debug("TestChangeNeedThread_Run_StillRunsWhenZero(): duration == " + duration);
+		assertTrue(duration >= 3000);
 	}
 
 }
