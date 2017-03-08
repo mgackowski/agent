@@ -146,16 +146,113 @@ public class TestDecisionThread {
 		assertTrue(fifteenActionScore > twentyFiveActionScore);
 	}
 	
-	@Ignore
+	/**
+	 * Test that at TEST_NEED = 80f, waiting (score 0) is preferable to -80f
+	 * TODO: Turns out that values <= -80f are scored higher than {-80f : 0f}, which shouldn't happen
+	 */
 	@Test
 	public void TestDecisionThread_QueryEnvironmentForPossibilities_NegativeDeltasAreScoredLowerThanFallback() {
-		// At need_1 = 80f, waiting is preferable to N1-80f
+		
+		/* Mock objects */
+		Needs testNeedEighty = mock(Needs.class);
+		when(testNeedEighty.getNeed("TEST_NEED")).thenReturn(80f);
+		Map<String, Float> needsMap = new HashMap<String, Float>();
+		needsMap.put("TEST_NEED", 80f);
+		when(testNeedEighty.getNeeds()).thenReturn(needsMap);
+		
+		Agent testAgent = mock(Agent.class);
+		when(testAgent.getNeeds()).thenReturn(testNeedEighty);
+		
+		DecisionThread testDecisionThread = new DecisionThread(testAgent);
+		
+		Promise removeEighty = mock(Promise.class); // <-- changes here
+		when(removeEighty.getChange("TEST_NEED")).thenReturn(-80f);
+		
+		
+		Action removeEightyAction = mock(Action.class);
+		when(removeEightyAction.getPromises()).thenReturn(removeEighty);
+		when(removeEightyAction.getName()).thenReturn("remove eighty test need");
+		
+		UseableObject testObject = mock(UseableObject.class);
+		List<Action> actionList = new ArrayList<Action>();
+		actionList.add(removeEightyAction);
+		when(testObject.advertiseActions()).thenReturn(actionList);
+		when(testObject.getName()).thenReturn("test object");
+		
+		List<UseableObject> objectList = new ArrayList<UseableObject>();
+		objectList.add(testObject);
+		
+		/* Perform test */
+		Map<ObjectAction, Float> resultMap = testDecisionThread.queryEnvironmentForPossibilities(objectList);
+
+		float removeEightyScore = 100;
+		for (Entry<ObjectAction, Float> thisEntry : resultMap.entrySet()) {
+			if (thisEntry.getKey().getAction().equals(removeEightyAction)) {
+				removeEightyScore = thisEntry.getValue();
+			}
+		}
+		assertTrue(0 > removeEightyScore);
+		
 	}
 	
-	@Ignore
-	@Test
+	/**
+	 * Test that at TEST_NEED_1 = 80f and TEST_NEED_2 = 20f,
+	 * need 2 + 20f is preferable to need 1 + 10f
+	 */
 	public void TestDecisionThread_QueryEnvironmentForPossibilities_LowerNeedsTakePrecedence() {
-		// At need_1 = 80f and need_2 = 20f, N2+10f is preferable to N1 + 10f
+		
+		/* Mock objects */
+		Needs testNeedEightyTwenty = mock(Needs.class);
+		when(testNeedEightyTwenty.getNeed("TEST_NEED_1")).thenReturn(80f);
+		when(testNeedEightyTwenty.getNeed("TEST_NEED_2")).thenReturn(20f);	//<-- changes here
+		Map<String, Float> needsMap = new HashMap<String, Float>();
+		needsMap.put("TEST_NEED_1", 80f);
+		needsMap.put("TEST_NEED_2", 20f);
+		when(testNeedEightyTwenty.getNeeds()).thenReturn(needsMap);
+		
+		Agent testAgent = mock(Agent.class);
+		when(testAgent.getNeeds()).thenReturn(testNeedEightyTwenty);
+		
+		DecisionThread testDecisionThread = new DecisionThread(testAgent);
+		
+		Promise addTenToNeedTwo = mock(Promise.class);
+		when(addTenToNeedTwo.getChange("TEST_NEED_2")).thenReturn(10f);
+		
+		Promise addTenToNeedOne = mock(Promise.class);
+		when(addTenToNeedOne.getChange("TEST_NEED_1")).thenReturn(10f);
+		
+		Action addTenToNeedTwoAction = mock(Action.class);
+		when(addTenToNeedTwoAction.getPromises()).thenReturn(addTenToNeedTwo);
+		when(addTenToNeedTwoAction.getName()).thenReturn("add ten to need two");
+		
+		Action addTenToNeedOneAction = mock(Action.class);
+		when(addTenToNeedOneAction.getPromises()).thenReturn(addTenToNeedOne);
+		when(addTenToNeedOneAction.getName()).thenReturn("add ten to need one");
+		
+		UseableObject testObject = mock(UseableObject.class);
+		List<Action> actionList = new ArrayList<Action>();
+		actionList.add(addTenToNeedTwoAction);
+		actionList.add(addTenToNeedOneAction);
+		when(testObject.advertiseActions()).thenReturn(actionList);
+		when(testObject.getName()).thenReturn("test object");
+		
+		List<UseableObject> objectList = new ArrayList<UseableObject>();
+		objectList.add(testObject);
+		
+		/* Perform test */
+		Map<ObjectAction, Float> resultMap = testDecisionThread.queryEnvironmentForPossibilities(objectList);
+
+		float tenToNeedOneActionScore = 0;
+		float tenToNeedTwoActionScore = 0;
+		for (Entry<ObjectAction, Float> thisEntry : resultMap.entrySet()) {
+			if (thisEntry.getKey().getAction().equals(addTenToNeedOneAction)) {
+				tenToNeedOneActionScore = thisEntry.getValue();
+			}
+			if (thisEntry.getKey().getAction().equals(addTenToNeedTwoAction)) {
+				tenToNeedTwoActionScore = thisEntry.getValue();
+			}
+		}
+		assertTrue(tenToNeedTwoActionScore > tenToNeedOneActionScore);
 	}
 	
 	@Ignore
