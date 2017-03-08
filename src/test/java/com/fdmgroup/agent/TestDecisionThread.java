@@ -255,10 +255,68 @@ public class TestDecisionThread {
 		assertTrue(tenToNeedTwoActionScore > tenToNeedOneActionScore);
 	}
 	
-	@Ignore
+	/**
+	 * Test that at TEST_NEED_1 = 80f and TEST_NEED_2 = 40f,
+	 * need 1 + 10f & need 2 + 11f is preferable to need 1 + 12f & need 2 +10f
+	 */
 	@Test
 	public void TestDecisionThread_QueryEnvironmentForPossibilities_LowerDeltaWithLowerNeedCanBeScoredHigherThanHigherDeltaWithHigherNeed() {
-		// At need_1 = 80f and need_2 = 40f, N1+10f & N2+11f is preferable to N1+12f & N2+10f
+		
+		/* Mock objects */
+		Needs testNeedEightyForty = mock(Needs.class);
+		when(testNeedEightyForty.getNeed("TEST_NEED_1")).thenReturn(80f);
+		when(testNeedEightyForty.getNeed("TEST_NEED_2")).thenReturn(40f);	//<-- changes here
+		Map<String, Float> needsMap = new HashMap<String, Float>();
+		needsMap.put("TEST_NEED_1", 80f);
+		needsMap.put("TEST_NEED_2", 40f);
+		when(testNeedEightyForty.getNeeds()).thenReturn(needsMap);
+		
+		Agent testAgent = mock(Agent.class);
+		when(testAgent.getNeeds()).thenReturn(testNeedEightyForty);
+		
+		DecisionThread testDecisionThread = new DecisionThread(testAgent);
+		
+		Promise addTenToNeedOneAndElevenToNeedTwo = mock(Promise.class);
+		when(addTenToNeedOneAndElevenToNeedTwo.getChange("TEST_NEED_1")).thenReturn(10f);
+		when(addTenToNeedOneAndElevenToNeedTwo.getChange("TEST_NEED_2")).thenReturn(11f);
+		
+		Promise addTwelveToNeedOneAndTenToNeedTwo = mock(Promise.class);
+		when(addTwelveToNeedOneAndTenToNeedTwo.getChange("TEST_NEED_1")).thenReturn(12f);
+		when(addTwelveToNeedOneAndTenToNeedTwo.getChange("TEST_NEED_2")).thenReturn(10f);
+		
+		Action addTenToNeedOneAndElevenToNeedTwoAction = mock(Action.class);
+		when(addTenToNeedOneAndElevenToNeedTwoAction.getPromises()).thenReturn(addTenToNeedOneAndElevenToNeedTwo);
+		when(addTenToNeedOneAndElevenToNeedTwoAction.getName()).thenReturn("add ten to need one and eleven to need two");
+		
+		Action addTwelveToNeedOneAndTenToNeedTwoAction = mock(Action.class);
+		when(addTwelveToNeedOneAndTenToNeedTwoAction.getPromises()).thenReturn(addTwelveToNeedOneAndTenToNeedTwo);
+		when(addTwelveToNeedOneAndTenToNeedTwoAction.getName()).thenReturn("add twelve to need one and ten to need two");
+		
+		UseableObject testObject = mock(UseableObject.class);
+		List<Action> actionList = new ArrayList<Action>();
+		actionList.add(addTenToNeedOneAndElevenToNeedTwoAction);
+		actionList.add(addTwelveToNeedOneAndTenToNeedTwoAction);
+		when(testObject.advertiseActions()).thenReturn(actionList);
+		when(testObject.getName()).thenReturn("test object");
+		
+		List<UseableObject> objectList = new ArrayList<UseableObject>();
+		objectList.add(testObject);
+		
+		/* Perform test */
+		Map<ObjectAction, Float> resultMap = testDecisionThread.queryEnvironmentForPossibilities(objectList);
+
+		float tenToNeedOneAndElevenToNeedTwoScore = 0;
+		float twelveToNeedOneAndTenToNeedTwoActionScore = 0;
+		for (Entry<ObjectAction, Float> thisEntry : resultMap.entrySet()) {
+			if (thisEntry.getKey().getAction().equals(addTwelveToNeedOneAndTenToNeedTwoAction)) {
+				twelveToNeedOneAndTenToNeedTwoActionScore = thisEntry.getValue();
+			}
+			if (thisEntry.getKey().getAction().equals(addTenToNeedOneAndElevenToNeedTwoAction)) {
+				tenToNeedOneAndElevenToNeedTwoScore = thisEntry.getValue();
+			}
+		}
+		assertTrue(tenToNeedOneAndElevenToNeedTwoScore > twelveToNeedOneAndTenToNeedTwoActionScore);
+		
 	}
 	
 	@Ignore
