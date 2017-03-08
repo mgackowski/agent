@@ -98,11 +98,15 @@ public class DecisionThread extends Thread {
 	 */
 	public Map<ObjectAction, Float> queryEnvironmentForPossibilities(List<UseableObject> objectList) {
 		Map<ObjectAction,Float> possibilities = new HashMap<ObjectAction,Float>();
+		log.debug("Querying environment for possibilities...");
 		for(UseableObject singleObject : objectList) {
+			log.debug("Examining possibilities for " + singleObject.getName() + "...");
 			for (Action singleAction : singleObject.advertiseActions()) {
+				log.debug("Scoring " + singleAction.getName() + "...");
 				possibilities.put(new ObjectAction(singleObject, singleAction), attenuatedScoreActionForAllNeeds(singleAction));
 			}
 		}
+		log.debug("Finished querying environment for possibilities.");
 		return possibilities;
 	}
 	
@@ -196,6 +200,7 @@ public class DecisionThread extends Thread {
 		for (String needName : thisAgent.getNeeds().getNeeds().keySet()) {
 			sum += attenuatedScoreActionForSingleNeed(thisAction, needName);
 		}
+		log.debug("The action: " + thisAction.getName() + " scores " + sum + " for all needs");
 		return sum;
 	}
 	
