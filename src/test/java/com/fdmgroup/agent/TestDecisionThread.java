@@ -6,9 +6,11 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Queue;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -322,7 +324,24 @@ public class TestDecisionThread {
 	@Ignore
 	@Test
 	public void TestDecisionThread_PerformActionsInQueue_PerformActionsIfAvailable() {
-		// Performs actions in queue if they're available
+		
+		Agent testAgent = mock(Agent.class);
+		
+		ObjectAction testObjectAction = mock(ObjectAction.class);
+		Queue<ObjectAction> testActionQueue = new LinkedList<ObjectAction>();
+		testActionQueue.add(testObjectAction);
+		
+		when(testAgent.getActionQueue()).thenReturn(testActionQueue);
+		when(testAgent.isAlive()).thenReturn(true);
+		when(testAgent.getName()).thenReturn("Test Agent");
+		
+		DecisionThread testDecisionThread = new DecisionThread(testAgent);
+		
+		testDecisionThread.performActionsInQueue();
+		
+		//figure out how to verify
+		
+		
 	}
 	
 	@Ignore
