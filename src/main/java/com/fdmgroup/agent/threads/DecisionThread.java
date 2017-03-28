@@ -36,6 +36,7 @@ public class DecisionThread extends Thread {
 	
 	/**
 	 * @param thisAgent the Agent on behalf of whom decisions are made
+	 * @deprecated use DecisionThread(Agent thisAgent, List<UseableObject> availableObjects)
 	 */
 	public DecisionThread(Agent thisAgent) {
 		this.thisAgent = thisAgent;

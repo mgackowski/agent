@@ -1,6 +1,6 @@
 package com.fdmgroup.agent;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -51,8 +51,8 @@ public class TestDecisionThread {
 		when(testNeedEightyTwenty.getNeeds()).thenReturn(needsMap);
 		
 		when(testAgent.getNeeds()).thenReturn(testNeedEightyTwenty);
-		
-		testDecisionThread = new DecisionThread(testAgent);
+		when(testAgent.isAlive()).thenReturn(true);
+		when(testAgent.getName()).thenReturn("Test Agent");
 		
 		actionList = new ArrayList<Action>();
 		objectList = new ArrayList<UseableObject>();
@@ -60,6 +60,8 @@ public class TestDecisionThread {
 		when(testObject.advertiseActions()).thenReturn(actionList);
 		when(testObject.getName()).thenReturn("test object");
 		objectList.add(testObject);
+		
+		testDecisionThread = new DecisionThread(testAgent, objectList);
 		
 	}
 	
@@ -146,7 +148,6 @@ public class TestDecisionThread {
 	
 	/**
 	 * Test that at TEST_NEED = 80f, waiting (score 0) is preferable to -80f
-	 * TODO: Turns out that values <= -80f are scored higher than {-80f : 0f}, which shouldn't happen
 	 */
 	@Test
 	public void TestDecisionThread_QueryEnvironmentForPossibilities_NegativeDeltasAreScoredLowerThanFallback() {
@@ -270,6 +271,7 @@ public class TestDecisionThread {
 	@Test(timeout = 2000)
 	public void TestDecisionThread_PerformActionsInQueue_PerformActionsIfAvailable() {
 		
+		// TODO: Duplicated block start
 		ObjectAction testObjectAction = mock(ObjectAction.class);
 		Queue<ObjectAction> testActionQueue = new LinkedList<ObjectAction>();
 		testActionQueue.add(testObjectAction);
@@ -291,10 +293,9 @@ public class TestDecisionThread {
 		when(testObjectAction.getAction()).thenReturn(testAction);
 		
 		when(testAgent.getActionQueue()).thenReturn(testActionQueue);
-		when(testAgent.isAlive()).thenReturn(true);
-		when(testAgent.getName()).thenReturn("Test Agent");
 		
 		when(testAgent.getIndivValues()).thenReturn(testIndividuality);
+		// TODO: Duplicated block end
 		
 		testDecisionThread.performActionsInQueue();
 		
@@ -302,15 +303,49 @@ public class TestDecisionThread {
 		
 	}
 	
-	@Ignore
 	@Test
-	public void TestDecisionThread_Run_ActionQueueUnchangedWhenObjectPoolIsNull() {
-		// Behave nicely when objectpool is null
+	public void TestDecisionThread_Run_ThreadRunsEvenIfObjectPoolIsEmpty() {
+		
+		//TODO: Duplicated block start
+		ObjectAction testObjectAction = mock(ObjectAction.class);
+		Queue<ObjectAction> testActionQueue = new LinkedList<ObjectAction>();
+		testActionQueue.add(testObjectAction);
+		
+		BasicIndividuality testIndividuality = mock(BasicIndividuality.class);
+		when(testIndividuality.getDownRate("TEST_NEED_1")).thenReturn(1f);
+		
+		Consequence needChange = mock(Consequence.class);
+		when(needChange.getChange()).thenReturn(2f);
+		
+		Map<String, Consequence> consequences = new HashMap<String, Consequence>();
+		consequences.put("TEST_NEED_1", needChange);
+		
+		Action testAction = mock(Action.class);
+		when(testAction.getConsequences()).thenReturn(consequences);
+		when(testAction.getConsequence("TEST_NEED_1")).thenReturn(needChange);
+		
+		when(testObjectAction.getObject()).thenReturn(testObject);
+		when(testObjectAction.getAction()).thenReturn(testAction);
+		
+		when(testAgent.getActionQueue()).thenReturn(testActionQueue);
+		
+		when(testAgent.getIndivValues()).thenReturn(testIndividuality);
+		//TODO: Duplicated block end
+		
+		objectList.clear();
+		testDecisionThread.start();
+		try {
+			Thread.sleep(1250);
+		} catch (InterruptedException e) {
+			log.error("Test interrupted");
+		}
+		assertTrue(testDecisionThread.isAlive());
+		testDecisionThread.interrupt();
 	}
 	
 	@Ignore
 	@Test
-	public void TestDecisionThread_Run_IfNoActionsInQueueThenDicisionIsMade() {
+	public void TestDecisionThread_Run_IfNoActionsInQueueThenDecisionIsMade() {
 		// If there are no more actions in queue, decision making is fired
 	}
 	
