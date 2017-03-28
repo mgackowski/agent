@@ -36,7 +36,7 @@ public class CriticalInterruptorThread extends Thread{
 				return;
 			}
 		}
-		log.debug("Interruptor finished - No. " + this.getId());
+		log.debug("Interruptor finished (no interruptions were necessary) - No. " + this.getId());
 	}
 	
 	/**

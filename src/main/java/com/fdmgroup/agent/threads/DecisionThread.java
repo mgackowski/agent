@@ -78,7 +78,8 @@ public class DecisionThread extends Thread {
 			
 			try {
 				log.info(thisAgent.getName() + " initiates a new thread to perform an action.");
-				PerformActionThread perform = new PerformActionThread(thisAgent, 10 * stepMillis); //TODO: Speed
+				//Hard-coded minimum duration of every action: 10 steps (1 second by default)
+				PerformActionThread perform = new PerformActionThread(thisAgent, 10); //TODO: Speed
 				perform.start();
 				Thread interruptor = new CriticalInterruptorThread(perform);
 				interruptor.start();

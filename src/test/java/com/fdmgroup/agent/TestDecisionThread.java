@@ -19,8 +19,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.fdmgroup.agent.actions.Action;
+import com.fdmgroup.agent.actions.Consequence;
 import com.fdmgroup.agent.actions.Promise;
 import com.fdmgroup.agent.agents.Agent;
+import com.fdmgroup.agent.agents.BasicIndividuality;
 import com.fdmgroup.agent.agents.Needs;
 import com.fdmgroup.agent.objects.ObjectAction;
 import com.fdmgroup.agent.objects.UseableObject;
@@ -30,8 +32,34 @@ public class TestDecisionThread {
 	
 	static Logger log = LogManager.getLogger();
 	
+	Agent testAgent = mock(Agent.class);
+	DecisionThread testDecisionThread;
+	List<Action> actionList;
+	List<UseableObject> objectList;
+	UseableObject testObject;
+	
 	@Before
 	public void setUpDecisionThreadTest() {
+		
+		Needs testNeedEightyTwenty = mock(Needs.class);
+		when(testNeedEightyTwenty.getNeed("TEST_NEED_1")).thenReturn(80f);
+		when(testNeedEightyTwenty.getNeed("TEST_NEED_2")).thenReturn(20f);
+		
+		Map<String, Float> needsMap = new HashMap<String, Float>();
+		needsMap.put("TEST_NEED_1", 80f);
+		needsMap.put("TEST_NEED_2", 20f);
+		when(testNeedEightyTwenty.getNeeds()).thenReturn(needsMap);
+		
+		when(testAgent.getNeeds()).thenReturn(testNeedEightyTwenty);
+		
+		testDecisionThread = new DecisionThread(testAgent);
+		
+		actionList = new ArrayList<Action>();
+		objectList = new ArrayList<UseableObject>();
+		testObject = mock(UseableObject.class);
+		when(testObject.advertiseActions()).thenReturn(actionList);
+		when(testObject.getName()).thenReturn("test object");
+		objectList.add(testObject);
 		
 	}
 	
@@ -40,24 +68,12 @@ public class TestDecisionThread {
 	 */
 	@Test
 	public void TestDecisionThread_QueryEnvironmentForPossibilities_HigherDeltaMeansHigherScore() {
-		
-		/* Mock objects */
-		Needs testNeedEighty = mock(Needs.class);
-		when(testNeedEighty.getNeed("TEST_NEED")).thenReturn(80f);
-		Map<String, Float> needsMap = new HashMap<String, Float>();
-		needsMap.put("TEST_NEED", 80f);
-		when(testNeedEighty.getNeeds()).thenReturn(needsMap);
-		
-		Agent testAgent = mock(Agent.class);
-		when(testAgent.getNeeds()).thenReturn(testNeedEighty);
-		
-		DecisionThread testDecisionThread = new DecisionThread(testAgent);
-		
+			
 		Promise addFifteen = mock(Promise.class);
-		when(addFifteen.getChange("TEST_NEED")).thenReturn(15f);
+		when(addFifteen.getChange("TEST_NEED_1")).thenReturn(15f);
 		
 		Promise addFive = mock(Promise.class);
-		when(addFive.getChange("TEST_NEED")).thenReturn(5f);
+		when(addFive.getChange("TEST_NEED_1")).thenReturn(5f);
 		
 		Action addFifteenAction = mock(Action.class);
 		when(addFifteenAction.getPromises()).thenReturn(addFifteen);
@@ -67,15 +83,8 @@ public class TestDecisionThread {
 		when(addFiveAction.getPromises()).thenReturn(addFive);
 		when(addFiveAction.getName()).thenReturn("add five to test need");
 		
-		UseableObject testObject = mock(UseableObject.class);
-		List<Action> actionList = new ArrayList<Action>();
 		actionList.add(addFifteenAction);
 		actionList.add(addFiveAction);
-		when(testObject.advertiseActions()).thenReturn(actionList);
-		when(testObject.getName()).thenReturn("test object");
-		
-		List<UseableObject> objectList = new ArrayList<UseableObject>();
-		objectList.add(testObject);
 		
 		/* Perform test */
 		Map<ObjectAction, Float> resultMap = testDecisionThread.queryEnvironmentForPossibilities(objectList);
@@ -101,22 +110,12 @@ public class TestDecisionThread {
 	public void TestDecisionThread_QueryEnvironmentForPossibilities_GoingOverHundredIsDiscouraged() {
 		
 		/* Mock objects */
-		Needs testNeedEighty = mock(Needs.class);
-		when(testNeedEighty.getNeed("TEST_NEED")).thenReturn(80f);
-		Map<String, Float> needsMap = new HashMap<String, Float>();
-		needsMap.put("TEST_NEED", 80f);
-		when(testNeedEighty.getNeeds()).thenReturn(needsMap);
-		
-		Agent testAgent = mock(Agent.class);
-		when(testAgent.getNeeds()).thenReturn(testNeedEighty);
-		
-		DecisionThread testDecisionThread = new DecisionThread(testAgent);
 		
 		Promise addFifteen = mock(Promise.class);
-		when(addFifteen.getChange("TEST_NEED")).thenReturn(15f);
+		when(addFifteen.getChange("TEST_NEED_1")).thenReturn(15f);
 		
 		Promise addTwentyFive = mock(Promise.class); // <-- changed here
-		when(addTwentyFive.getChange("TEST_NEED")).thenReturn(25f);
+		when(addTwentyFive.getChange("TEST_NEED_1")).thenReturn(25f);
 		
 		Action addFifteenAction = mock(Action.class);
 		when(addFifteenAction.getPromises()).thenReturn(addFifteen);
@@ -126,15 +125,8 @@ public class TestDecisionThread {
 		when(addTwentyFiveAction.getPromises()).thenReturn(addTwentyFive);
 		when(addTwentyFiveAction.getName()).thenReturn("add twenty five to test need");
 		
-		UseableObject testObject = mock(UseableObject.class);
-		List<Action> actionList = new ArrayList<Action>();
 		actionList.add(addFifteenAction);
 		actionList.add(addTwentyFiveAction);
-		when(testObject.advertiseActions()).thenReturn(actionList);
-		when(testObject.getName()).thenReturn("test object");
-		
-		List<UseableObject> objectList = new ArrayList<UseableObject>();
-		objectList.add(testObject);
 		
 		/* Perform test */
 		Map<ObjectAction, Float> resultMap = testDecisionThread.queryEnvironmentForPossibilities(objectList);
@@ -160,33 +152,15 @@ public class TestDecisionThread {
 	public void TestDecisionThread_QueryEnvironmentForPossibilities_NegativeDeltasAreScoredLowerThanFallback() {
 		
 		/* Mock objects */
-		Needs testNeedEighty = mock(Needs.class);
-		when(testNeedEighty.getNeed("TEST_NEED")).thenReturn(80f);
-		Map<String, Float> needsMap = new HashMap<String, Float>();
-		needsMap.put("TEST_NEED", 80f);
-		when(testNeedEighty.getNeeds()).thenReturn(needsMap);
 		
-		Agent testAgent = mock(Agent.class);
-		when(testAgent.getNeeds()).thenReturn(testNeedEighty);
-		
-		DecisionThread testDecisionThread = new DecisionThread(testAgent);
-		
-		Promise removeEighty = mock(Promise.class); // <-- changes here
-		when(removeEighty.getChange("TEST_NEED")).thenReturn(-80f);
-		
+		Promise removeEighty = mock(Promise.class);
+		when(removeEighty.getChange("TEST_NEED_1")).thenReturn(-80f);
 		
 		Action removeEightyAction = mock(Action.class);
 		when(removeEightyAction.getPromises()).thenReturn(removeEighty);
 		when(removeEightyAction.getName()).thenReturn("remove eighty test need");
 		
-		UseableObject testObject = mock(UseableObject.class);
-		List<Action> actionList = new ArrayList<Action>();
 		actionList.add(removeEightyAction);
-		when(testObject.advertiseActions()).thenReturn(actionList);
-		when(testObject.getName()).thenReturn("test object");
-		
-		List<UseableObject> objectList = new ArrayList<UseableObject>();
-		objectList.add(testObject);
 		
 		/* Perform test */
 		Map<ObjectAction, Float> resultMap = testDecisionThread.queryEnvironmentForPossibilities(objectList);
@@ -197,7 +171,6 @@ public class TestDecisionThread {
 				removeEightyScore = thisEntry.getValue();
 			}
 		}
-		log.debug("Test result: remove eighty is scored as " + removeEightyScore);
 		assertTrue(0 > removeEightyScore);
 		
 	}
@@ -207,20 +180,6 @@ public class TestDecisionThread {
 	 * need 2 + 20f is preferable to need 1 + 10f
 	 */
 	public void TestDecisionThread_QueryEnvironmentForPossibilities_LowerNeedsTakePrecedence() {
-		
-		/* Mock objects */
-		Needs testNeedEightyTwenty = mock(Needs.class);
-		when(testNeedEightyTwenty.getNeed("TEST_NEED_1")).thenReturn(80f);
-		when(testNeedEightyTwenty.getNeed("TEST_NEED_2")).thenReturn(20f);	//<-- changes here
-		Map<String, Float> needsMap = new HashMap<String, Float>();
-		needsMap.put("TEST_NEED_1", 80f);
-		needsMap.put("TEST_NEED_2", 20f);
-		when(testNeedEightyTwenty.getNeeds()).thenReturn(needsMap);
-		
-		Agent testAgent = mock(Agent.class);
-		when(testAgent.getNeeds()).thenReturn(testNeedEightyTwenty);
-		
-		DecisionThread testDecisionThread = new DecisionThread(testAgent);
 		
 		Promise addTenToNeedTwo = mock(Promise.class);
 		when(addTenToNeedTwo.getChange("TEST_NEED_2")).thenReturn(10f);
@@ -236,15 +195,8 @@ public class TestDecisionThread {
 		when(addTenToNeedOneAction.getPromises()).thenReturn(addTenToNeedOne);
 		when(addTenToNeedOneAction.getName()).thenReturn("add ten to need one");
 		
-		UseableObject testObject = mock(UseableObject.class);
-		List<Action> actionList = new ArrayList<Action>();
 		actionList.add(addTenToNeedTwoAction);
 		actionList.add(addTenToNeedOneAction);
-		when(testObject.advertiseActions()).thenReturn(actionList);
-		when(testObject.getName()).thenReturn("test object");
-		
-		List<UseableObject> objectList = new ArrayList<UseableObject>();
-		objectList.add(testObject);
 		
 		/* Perform test */
 		Map<ObjectAction, Float> resultMap = testDecisionThread.queryEnvironmentForPossibilities(objectList);
@@ -272,16 +224,12 @@ public class TestDecisionThread {
 		/* Mock objects */
 		Needs testNeedEightyForty = mock(Needs.class);
 		when(testNeedEightyForty.getNeed("TEST_NEED_1")).thenReturn(80f);
-		when(testNeedEightyForty.getNeed("TEST_NEED_2")).thenReturn(40f);	//<-- changes here
+		when(testNeedEightyForty.getNeed("TEST_NEED_2")).thenReturn(40f);
 		Map<String, Float> needsMap = new HashMap<String, Float>();
 		needsMap.put("TEST_NEED_1", 80f);
 		needsMap.put("TEST_NEED_2", 40f);
 		when(testNeedEightyForty.getNeeds()).thenReturn(needsMap);
-		
-		Agent testAgent = mock(Agent.class);
 		when(testAgent.getNeeds()).thenReturn(testNeedEightyForty);
-		
-		DecisionThread testDecisionThread = new DecisionThread(testAgent);
 		
 		Promise addTenToNeedOneAndElevenToNeedTwo = mock(Promise.class);
 		when(addTenToNeedOneAndElevenToNeedTwo.getChange("TEST_NEED_1")).thenReturn(10f);
@@ -299,15 +247,8 @@ public class TestDecisionThread {
 		when(addTwelveToNeedOneAndTenToNeedTwoAction.getPromises()).thenReturn(addTwelveToNeedOneAndTenToNeedTwo);
 		when(addTwelveToNeedOneAndTenToNeedTwoAction.getName()).thenReturn("add twelve to need one and ten to need two");
 		
-		UseableObject testObject = mock(UseableObject.class);
-		List<Action> actionList = new ArrayList<Action>();
 		actionList.add(addTenToNeedOneAndElevenToNeedTwoAction);
 		actionList.add(addTwelveToNeedOneAndTenToNeedTwoAction);
-		when(testObject.advertiseActions()).thenReturn(actionList);
-		when(testObject.getName()).thenReturn("test object");
-		
-		List<UseableObject> objectList = new ArrayList<UseableObject>();
-		objectList.add(testObject);
 		
 		/* Perform test */
 		Map<ObjectAction, Float> resultMap = testDecisionThread.queryEnvironmentForPossibilities(objectList);
@@ -326,26 +267,38 @@ public class TestDecisionThread {
 		
 	}
 	
-	@Ignore
-	@Test
+	@Test(timeout = 2000)
 	public void TestDecisionThread_PerformActionsInQueue_PerformActionsIfAvailable() {
-		
-		Agent testAgent = mock(Agent.class);
 		
 		ObjectAction testObjectAction = mock(ObjectAction.class);
 		Queue<ObjectAction> testActionQueue = new LinkedList<ObjectAction>();
 		testActionQueue.add(testObjectAction);
 		
+		BasicIndividuality testIndividuality = mock(BasicIndividuality.class);
+		when(testIndividuality.getDownRate("TEST_NEED_1")).thenReturn(1f);
+		
+		Consequence needChange = mock(Consequence.class);
+		when(needChange.getChange()).thenReturn(2f);
+		
+		Map<String, Consequence> consequences = new HashMap<String, Consequence>();
+		consequences.put("TEST_NEED_1", needChange);
+		
+		Action testAction = mock(Action.class);
+		when(testAction.getConsequences()).thenReturn(consequences);
+		when(testAction.getConsequence("TEST_NEED_1")).thenReturn(needChange);
+		
+		when(testObjectAction.getObject()).thenReturn(testObject);
+		when(testObjectAction.getAction()).thenReturn(testAction);
+		
 		when(testAgent.getActionQueue()).thenReturn(testActionQueue);
 		when(testAgent.isAlive()).thenReturn(true);
 		when(testAgent.getName()).thenReturn("Test Agent");
 		
-		DecisionThread testDecisionThread = new DecisionThread(testAgent);
+		when(testAgent.getIndivValues()).thenReturn(testIndividuality);
 		
 		testDecisionThread.performActionsInQueue();
 		
-		//figure out how to verify
-		
+		assertTrue(testActionQueue.isEmpty());
 		
 	}
 	
