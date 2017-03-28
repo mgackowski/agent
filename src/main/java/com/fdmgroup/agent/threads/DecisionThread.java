@@ -215,18 +215,26 @@ public class DecisionThread extends Thread {
 	 * 
 	 * @param thisAction The Action to be scored.
 	 * @param needName The name of the need. The suggested format is ALLCAPS e.g. "HUNGER".
-	 * @return A score of how beneficial the Action promises to be in terms of the need.
+	 * @return A score of how beneficial the Action promises to be in terms of the need. Can be negative
+	 * or -Infinity for lethal actions (c + d <= 0).
 	 */
 	public float attenuatedScoreActionForSingleNeed(Action thisAction, String needName) {
 		float score = 0;
 		float current = thisAgent.getNeeds().getNeed(needName);
 		float delta = thisAction.getPromises().getChange(needName);
+		float currentDeltaSum = current + delta;
 		
-		if (0 < (current + delta) && (current+delta) <= 100) {
-			score = 100/current - 100/(current+delta);
+		// Certain death; award -Infinity score to an action which brings a need to negative values
+		if (currentDeltaSum < 0) {
+			currentDeltaSum = 0;
 		}
-		if ((current+delta) > 100) {
-			score = 100/current - 100/(current+delta) - current/1000*(current+delta-100)*(current+delta-100);
+		// Score normally
+		if (0 <= currentDeltaSum && currentDeltaSum <= 100) {
+			score = 100/current - 100/(currentDeltaSum);
+		}
+		// If need goes over 100, add sharp penalty to score
+		if (currentDeltaSum > 100) {
+			score = 100/current - 100/currentDeltaSum - current/1000*(currentDeltaSum-100)*(currentDeltaSum-100);
 		}
 		return score;
 	}

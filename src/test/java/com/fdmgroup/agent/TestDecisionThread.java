@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -25,6 +27,8 @@ import com.fdmgroup.agent.objects.UseableObject;
 import com.fdmgroup.agent.threads.DecisionThread;
 
 public class TestDecisionThread {
+	
+	static Logger log = LogManager.getLogger();
 	
 	@Before
 	public void setUpDecisionThreadTest() {
@@ -193,6 +197,7 @@ public class TestDecisionThread {
 				removeEightyScore = thisEntry.getValue();
 			}
 		}
+		log.debug("Test result: remove eighty is scored as " + removeEightyScore);
 		assertTrue(0 > removeEightyScore);
 		
 	}
