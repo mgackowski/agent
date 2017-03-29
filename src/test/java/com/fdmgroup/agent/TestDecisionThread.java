@@ -37,6 +37,7 @@ public class TestDecisionThread {
 	List<Action> actionList;
 	List<UseableObject> objectList;
 	UseableObject testObject;
+	Map<String, Float> needsMap;
 	
 	@Before
 	public void setUpDecisionThreadTest() {
@@ -45,7 +46,7 @@ public class TestDecisionThread {
 		when(testNeedEightyTwenty.getNeed("TEST_NEED_1")).thenReturn(80f);
 		when(testNeedEightyTwenty.getNeed("TEST_NEED_2")).thenReturn(20f);
 		
-		Map<String, Float> needsMap = new HashMap<String, Float>();
+		needsMap = new HashMap<String, Float>();
 		needsMap.put("TEST_NEED_1", 80f);
 		needsMap.put("TEST_NEED_2", 20f);
 		when(testNeedEightyTwenty.getNeeds()).thenReturn(needsMap);
@@ -347,24 +348,61 @@ public class TestDecisionThread {
 	@Test
 	public void TestDecisionThread_Run_IfNoActionsInQueueThenDecisionIsMade() {
 		// If there are no more actions in queue, decision making is fired
+		//TODO: Not verifyable with current implementation
 	}
 	
 	@Ignore
 	@Test
 	public void TestDecisionThread_WhenGetObjectsReturnsEmpty() {
 		// Decision making doesn't update queue in the absence of objects (getobjects is empty)
+		//TODO: Not verifyable with current implementation
 	}
 	
 	@Ignore
 	@Test
 	public void TestDecisionThread_WaitThreadExecutedWhenNoBeneficialActionsAvailable() {
 		// Wait thread is executed when there are no beneficial actions
+		// TODO: Not verifyable with current implementation
 	}
 	
-	@Ignore
 	@Test
 	public void TestDecisionThread_ThreadStopsWhenAgentDies() {
-		// Decision thread is stopped when the agent is dead
+		// TODO: This kind of test is prone to failure due to Mockito's limitations for concurrency testing
+		// TODO: Duplicated block start
+		ObjectAction testObjectAction = mock(ObjectAction.class);
+		Queue<ObjectAction> testActionQueue = new LinkedList<ObjectAction>();
+		testActionQueue.add(testObjectAction);
+		
+		BasicIndividuality testIndividuality = mock(BasicIndividuality.class);
+		when(testIndividuality.getDownRate("TEST_NEED_1")).thenReturn(1f);
+		
+		Consequence needChange = mock(Consequence.class);
+		when(needChange.getChange()).thenReturn(2f);
+		
+		Map<String, Consequence> consequences = new HashMap<String, Consequence>();
+		consequences.put("TEST_NEED_1", needChange);
+		
+		Action testAction = mock(Action.class);
+		when(testAction.getConsequences()).thenReturn(consequences);
+		when(testAction.getConsequence("TEST_NEED_1")).thenReturn(needChange);
+		
+		when(testObjectAction.getObject()).thenReturn(testObject);
+		when(testObjectAction.getAction()).thenReturn(testAction);
+		
+		when(testAgent.getActionQueue()).thenReturn(testActionQueue);
+		
+		when(testAgent.getIndivValues()).thenReturn(testIndividuality);
+		// TODO: Duplicated block end
+		
+		when(testAgent.isAlive()).thenReturn(false);
+		testDecisionThread.start();
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			log.error("Test interrupted");
+		};
+		assertFalse(testDecisionThread.isAlive());
+		testDecisionThread.interrupt();
 	}
 
 }
