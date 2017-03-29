@@ -50,4 +50,20 @@ public abstract class BasicAction implements Action{
 		return nextAction;
 	}
 
+
+	/**
+	 * @param nextAction the next action that is to be performed after finishing this one. Can't point to itself.
+	 * @return true if successful, false if set to point to itself - then, nextAction is reset to null
+	 */
+	public boolean setNextAction(Action nextAction) {
+		if(nextAction.getClass().equals(this.getClass())) {
+			this.nextAction = null;
+			return false;
+		}
+		else {
+			this.nextAction = nextAction;
+			return true;
+		}
+	}
+
 }

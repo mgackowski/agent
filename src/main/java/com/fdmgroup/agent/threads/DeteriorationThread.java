@@ -13,6 +13,7 @@ public class DeteriorationThread extends Thread {
 	
 	static Logger log = LogManager.getLogger();
 	Agent thisAgent;
+	long stepMillis = 100;
 	
 	/**
 	 * @param thisAgent the Agent whose needs to deteriorate
@@ -40,7 +41,7 @@ public class DeteriorationThread extends Thread {
 			}
 			
 			try {
-				Thread.sleep(1000); // TODO: Speed
+				Thread.sleep(10 * stepMillis); // TODO: Speed
 			} catch (InterruptedException e) {
 				log.debug("Deterioration thread for Agent " + thisAgent.getName() + " has been interrupted.");
 				return;

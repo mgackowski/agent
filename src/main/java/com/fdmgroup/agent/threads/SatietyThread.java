@@ -76,7 +76,7 @@ public class SatietyThread extends Thread {
 			if (pairedActionThread != null) {
 				pairedActionThread.join();
 			}
-			Thread.sleep(millis);
+			Thread.sleep(millis);	//TODO: speed
 		}
 		catch (InterruptedException e) {
 			log.info(satedAgent.getName() + "'s satiety thread has been interrupted.");

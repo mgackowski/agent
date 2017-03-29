@@ -18,7 +18,7 @@ public class WaitThread extends Thread {
 	 * Create a new Wait Thread which lasts the specified number of milliseconds.
 	 * @param millis lifetime of this thread in milliseconds
 	 */
-	WaitThread(long millis) {
+	public WaitThread(long millis) {
 		this.millis = millis;
 		this.setName("wait " + millis + "s thread");
 		this.setName("Wait thread");
@@ -28,11 +28,13 @@ public class WaitThread extends Thread {
 	 * @see java.lang.Thread#run()
 	 */
 	public void run() {
+		log.debug("Started Wait thread of length " + millis + " ms");
 		try {
-			Thread.sleep(millis);
+			Thread.sleep(millis);	//TODO: speed
 		} catch (InterruptedException e) {
 			log.debug("Wait thread has been interrupted.");
 			return;
 		}
+		log.debug("Finished Wait thread of length " + millis + " ms");
 	}
 }

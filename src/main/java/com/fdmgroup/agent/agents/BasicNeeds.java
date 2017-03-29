@@ -4,18 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A basic implementation of Needs, representing two needs - "FOOD" and "ENERGY".
+ * An abstract class for Needs to serve as a template for basic needs.
+ * Each need has a name and value, and a method for changing the need is provided.
  * @author Mikolaj.Gackowski
  *
  */
-public class BasicNeeds implements Needs {
+public abstract class BasicNeeds implements Needs {
 	
-	private Map<String,Float> needs = new HashMap<String,Float>();
-	
-	public BasicNeeds() {
-		needs.put("FOOD", 80f);
-		needs.put("ENERGY", 80f);
-	}
+	protected Map<String,Float> needs = new HashMap<String,Float>();
 	
 	/* (non-Javadoc)
 	 * @see com.fdmgroup.agent.agents.Needs#getNeed(java.lang.String)
@@ -46,13 +42,17 @@ public class BasicNeeds implements Needs {
 	 * @see com.fdmgroup.agent.agents.Needs#changeNeed(java.lang.String, float)
 	 */
 	public float changeNeed(String needName, float delta) {
-		if (needs.containsKey(needName)) {
-			needs.put(needName, needs.get(needName) + delta);
-			return needs.get(needName);
-		}
-		else {
+		if (!needs.containsKey(needName)) {
 			return -1f;
 		}
+		float newValue = needs.get(needName) + delta;
+		if (newValue >= 0f) {
+			needs.put(needName, newValue);
+		}
+		else {
+			needs.put(needName, 0f);
+		}
+		return needs.get(needName);
 	}
 	
 	/* (non-Javadoc)

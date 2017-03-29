@@ -32,9 +32,11 @@ public class DecisionThread extends Thread {
 	
 	Agent thisAgent;
 	List<UseableObject> availableObjects;
+	long stepMillis = 100;
 	
 	/**
 	 * @param thisAgent the Agent on behalf of whom decisions are made
+	 * @deprecated use DecisionThread(Agent thisAgent, List<UseableObject> availableObjects)
 	 */
 	public DecisionThread(Agent thisAgent) {
 		this.thisAgent = thisAgent;
@@ -77,7 +79,8 @@ public class DecisionThread extends Thread {
 			
 			try {
 				log.info(thisAgent.getName() + " initiates a new thread to perform an action.");
-				PerformActionThread perform = new PerformActionThread(thisAgent, 1000); //TODO: Speed
+				//Hard-coded minimum duration of every action: 10 steps (1 second by default)
+				PerformActionThread perform = new PerformActionThread(thisAgent, 10); //TODO: Speed
 				perform.start();
 				Thread interruptor = new CriticalInterruptorThread(perform);
 				interruptor.start();
@@ -97,11 +100,15 @@ public class DecisionThread extends Thread {
 	 */
 	public Map<ObjectAction, Float> queryEnvironmentForPossibilities(List<UseableObject> objectList) {
 		Map<ObjectAction,Float> possibilities = new HashMap<ObjectAction,Float>();
+		log.debug("Querying environment for possibilities...");
 		for(UseableObject singleObject : objectList) {
+			log.debug("Examining possibilities for " + singleObject.getName() + "...");
 			for (Action singleAction : singleObject.advertiseActions()) {
+				log.debug("Scoring " + singleAction.getName() + "...");
 				possibilities.put(new ObjectAction(singleObject, singleAction), attenuatedScoreActionForAllNeeds(singleAction));
 			}
 		}
+		log.debug("Finished querying environment for possibilities.");
 		return possibilities;
 	}
 	
@@ -195,6 +202,7 @@ public class DecisionThread extends Thread {
 		for (String needName : thisAgent.getNeeds().getNeeds().keySet()) {
 			sum += attenuatedScoreActionForSingleNeed(thisAction, needName);
 		}
+		log.debug("The action: " + thisAction.getName() + " scores " + sum + " for all needs");
 		return sum;
 	}
 	
@@ -209,18 +217,26 @@ public class DecisionThread extends Thread {
 	 * 
 	 * @param thisAction The Action to be scored.
 	 * @param needName The name of the need. The suggested format is ALLCAPS e.g. "HUNGER".
-	 * @return A score of how beneficial the Action promises to be in terms of the need.
+	 * @return A score of how beneficial the Action promises to be in terms of the need. Can be negative
+	 * or -Infinity for lethal actions (c + d <= 0).
 	 */
 	public float attenuatedScoreActionForSingleNeed(Action thisAction, String needName) {
 		float score = 0;
 		float current = thisAgent.getNeeds().getNeed(needName);
 		float delta = thisAction.getPromises().getChange(needName);
+		float currentDeltaSum = current + delta;
 		
-		if (0 < (current + delta) && (current+delta) <= 100) {
-			score = 100/current - 100/(current+delta);
+		// Certain death; award -Infinity score to an action which brings a need to negative values
+		if (currentDeltaSum < 0) {
+			currentDeltaSum = 0;
 		}
-		if ((current+delta) > 100) {
-			score = 100/current - 100/(current+delta) - current/1000*(current+delta-100)*(current+delta-100);
+		// Score normally
+		if (0 <= currentDeltaSum && currentDeltaSum <= 100) {
+			score = 100/current - 100/(currentDeltaSum);
+		}
+		// If need goes over 100, add sharp penalty to score
+		if (currentDeltaSum > 100) {
+			score = 100/current - 100/currentDeltaSum - current/1000*(currentDeltaSum-100)*(currentDeltaSum-100);
 		}
 		return score;
 	}

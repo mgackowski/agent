@@ -17,6 +17,7 @@ public class ChangeNeedThread extends Thread {
 	Agent targetAgent;
 	float needChangeValue;
 	String needName;
+	long stepMillis = 100;
 	
 	/**
 	 * @param targetAgent The agent possessing the need to change
@@ -47,7 +48,7 @@ public class ChangeNeedThread extends Thread {
 			}
 			targetAgent.getNeeds().changeNeed(needName, (needChangeValue / numSteps));
 			try {
-				Thread.sleep(200);	//TODO: Speed!
+				Thread.sleep(2 * stepMillis);	//TODO: Speed!
 			} catch (InterruptedException e) {
 				log.debug("Need change thread for Agent " + targetAgent.getName() + " has been interrupted.");
 				return;

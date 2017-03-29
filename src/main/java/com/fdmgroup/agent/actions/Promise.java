@@ -18,15 +18,16 @@ public class Promise {
 
 	/**
 	 * @param The name of the need. The suggested format is ALLCAPS e.g. "HUNGER".
-	 * @return The amount of points that that will be added/subtracted from the current need level. Returns 0 if the need is not described in the promise.
+	 * @return The amount of points that that will be added/subtracted from the current need level. Returns 0 if the need is not described in the promise or its value is null.
 	 */
 	public float getChange(String needName){
+		if (change.get(needName) == null) {
+			return 0f;
+		}
 		if (change.containsKey(needName)) {
 			return change.get(needName);
 		}
-		else {
 			return 0f;
-		}
 	}
 
 	/**
